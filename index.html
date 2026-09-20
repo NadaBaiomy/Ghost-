@@ -2,1214 +2,706 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no,viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Ghost">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="theme-color" content="#080c12">
-  <meta name="application-name" content="Ghost">
+  <meta name="theme-color" content="#050810">
   <title>Ghost</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Creepster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700;900&family=Reem+Kufi+Fun:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <style>
-    :root {
-      --bg: #080c12;
-      --room: #0e1319;
-      --wall: #151c26;
-      --floor: #0a0f16;
-      --accent: #00e676;
-      --accent-dim: #00a854;
-      --orange: #ff6b35;
-      --danger: #ff1744;
-      --gold: #ffd740;
-      --ghost-col: #c8cce0;
-      --ghost-glow: rgba(200,204,224,0.25);
-      --card: #121a26;
-      --border: #1e2a3a;
-      --text: #e4e8f0;
-      --muted: #6a7a8e;
-    }
-    *{margin:0;padding:0;box-sizing:border-box}
-    html,body{height:100%;overflow:hidden}
-    body{
-      font-family:'Cairo',sans-serif;
-      background:var(--bg);
-      color:var(--text);
-      user-select:none;
-      -webkit-user-select:none;
-      touch-action:manipulation;
-    }
+    :root{--bg:#050810;--ac:#00e676;--or:#ff6b35;--dn:#ff1744;--gd:#ffd740;--gc:#b0b4c8;--cd:#0c1220;--bd:#1a2436;--tx:#d8dce8;--mt:#5a6a80;--wall:#0f1520;--floor:#080c14}
+    *{margin:0;padding:0;box-sizing:border-box}html,body{height:100%;overflow:hidden}
+    body{font-family:'Cairo',sans-serif;background:var(--bg);color:var(--tx);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+    .scr{display:none;position:fixed;inset:0;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .5s}
+    .scr.on{display:flex;opacity:1}
 
-    /* === شاشات === */
-    .screen{
-      display:none;position:fixed;inset:0;
-      flex-direction:column;align-items:center;justify-content:center;
-      opacity:0;transition:opacity .35s ease;
-    }
-    .screen.active{display:flex;opacity:1}
+    /* ===== قائمة ===== */
+    #menu{background:radial-gradient(ellipse at 50% 40%,#0a1020,var(--bg) 75%)}
+    .mpc{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+    .mp{position:absolute;width:2px;height:2px;background:var(--gc);border-radius:50%;opacity:0;animation:mpd 8s linear infinite}
+    @keyframes mpd{0%{opacity:0;transform:translateY(0)}15%{opacity:.22}85%{opacity:.08}100%{opacity:0;transform:translateY(-180px)}}
+    .menu-ghost{width:160px;height:200px;margin-bottom:20px;opacity:.85;filter:drop-shadow(0 0 30px rgba(180,185,210,.15));animation:mfloat 4s ease-in-out infinite}
+    @keyframes mfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+    .mt1{font-family:'Reem Kufi Fun',sans-serif;font-size:clamp(52px,14vw,90px);color:#c8cce0;letter-spacing:14px;text-shadow:0 0 60px rgba(200,204,224,.12),0 4px 0 rgba(80,85,110,.3);margin-bottom:6px}
+    .mt2{font-size:clamp(13px,2.8vw,17px);color:var(--mt);margin-bottom:44px;letter-spacing:3px;font-weight:300}
+    .btn{border:none;border-radius:12px;cursor:pointer;font-family:'Cairo',sans-serif;font-weight:700;transition:all .25s}
+    .bp{background:linear-gradient(135deg,var(--ac),#00c853);color:#050810;font-size:19px;padding:16px 60px;min-width:220px;letter-spacing:1px}
+    .bp:hover{transform:scale(1.06);box-shadow:0 0 36px rgba(0,230,118,.25)}.bp:active{transform:scale(.95)}
 
-    /* === اللوجو SVG === */
-    .logo-ghost{width:140px;height:170px;position:relative;margin-bottom:10px}
-    .logo-ghost svg{width:100%;height:100%;filter:drop-shadow(0 0 30px var(--ghost-glow))}
+    /* ===== مقدمة ===== */
+    #intro{background:var(--bg);padding:20px}
+    .ibx{background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:36px;max-width:440px;width:92%;text-align:center}
+    .ilv{color:var(--ac);font-size:11px;font-weight:700;letter-spacing:6px;margin-bottom:12px;text-transform:uppercase}
+    .inm{font-size:32px;font-weight:900;margin-bottom:8px;letter-spacing:1px}
 
-    /* === القائمة === */
-    #menu-screen{
-      background:radial-gradient(ellipse at 50% 35%,#111926 0%,var(--bg) 70%);
-    }
-    .menu-particles{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-    .m-particle{
-      position:absolute;width:2px;height:2px;background:var(--ghost-col);
-      border-radius:50%;opacity:0;animation:mDrift 7s linear infinite;
-    }
-    @keyframes mDrift{
-      0%{opacity:0;transform:translateY(0) scale(1)}
-      15%{opacity:.35}
-      85%{opacity:.15}
-      100%{opacity:0;transform:translateY(-180px) scale(.5)}
-    }
-    .menu-title{
-      font-family:'Creepster',cursive;font-size:clamp(42px,10vw,72px);
-      color:var(--accent);letter-spacing:6px;
-      text-shadow:0 0 40px rgba(0,230,118,.25),0 2px 0 #005522;
-      margin-bottom:2px;
-    }
-    .menu-sub{
-      font-size:clamp(14px,3vw,20px);color:var(--muted);
-      margin-bottom:36px;letter-spacing:1px;
-    }
-    .btn{
-      border:none;border-radius:14px;cursor:pointer;
-      font-family:'Cairo',sans-serif;font-weight:700;
-      transition:all .2s;position:relative;overflow:hidden;
-    }
-    .btn-primary{
-      background:linear-gradient(135deg,var(--accent),#00c853);
-      color:#080c12;font-size:18px;padding:14px 52px;min-width:220px;
-    }
-    .btn-primary:hover{transform:scale(1.04);box-shadow:0 0 30px rgba(0,230,118,.35)}
-    .btn-primary:active{transform:scale(.97)}
-    .btn-sec{
-      background:var(--card);color:var(--text);font-size:16px;
-      padding:12px 44px;min-width:220px;
-      border:1px solid var(--border);
-    }
-    .btn-sec:hover{border-color:var(--accent);box-shadow:0 0 15px rgba(0,230,118,.15)}
+    .gwrap{display:flex;justify-content:center;margin:18px 0}
+    .gchar-lg{position:relative;width:90px;height:120px;animation:gfloat 3.5s ease-in-out infinite}
+    @keyframes gfloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+    .ghead-lg{width:78px;height:66px;margin:0 auto;position:relative;background:radial-gradient(ellipse at 50% 35%,rgba(200,205,225,.72),rgba(140,145,170,.18));border-radius:50% 50% 40% 40%;box-shadow:0 0 28px rgba(180,185,210,.12),0 0 60px rgba(180,185,210,.06)}
+    .geye-lg{position:absolute;width:14px;height:16px;background:#0a0618;border-radius:50%;top:22px;overflow:hidden;transition:all .3s}
+    .geye-lg.l{left:16px}.geye-lg.r{right:16px}
+    .gpup-lg{width:6px;height:7px;background:var(--dn);border-radius:50%;margin:4px auto;box-shadow:0 0 8px rgba(255,23,68,.6);transition:all .3s}
+    .gmou-lg{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);width:10px;height:6px;background:#0a0618;border-radius:50%;transition:all .3s}
+    .gtail-lg{width:78px;height:34px;margin:-4px auto 0;background:linear-gradient(180deg,rgba(180,185,210,.28),rgba(140,145,170,.04));clip-path:polygon(0% 0%,100% 0%,100% 55%,84% 100%,68% 55%,52% 100%,36% 55%,20% 100%,0% 55%);filter:blur(1px)}
 
-    /* === كيفية اللعب === */
-    #howto-screen{background:var(--bg);padding:24px;overflow-y:auto}
-    .howto-box{
-      background:var(--card);border:1px solid var(--border);border-radius:18px;
-      padding:28px;max-width:520px;width:95%;max-height:85vh;overflow-y:auto;
-    }
-    .howto-box h2{color:var(--accent);margin-bottom:18px;font-size:22px;text-align:center}
-    .how-step{
-      display:flex;align-items:flex-start;gap:14px;margin:14px 0;
-      padding:10px 12px;background:rgba(0,0,0,.2);border-radius:10px;
-    }
-    .how-icon{font-size:26px;min-width:36px;text-align:center}
-    .how-text{font-size:14px;line-height:1.7;color:var(--text)}
+    /* ===== اللعبة ===== */
+    #game{justify-content:flex-start;background:var(--bg)}
+    .hud{width:100%;height:48px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;background:rgba(6,10,18,.92);border-bottom:1px solid rgba(255,255,255,.04);flex-shrink:0;z-index:20;backdrop-filter:blur(8px)}
+    .hl{font-weight:700;color:var(--ac);font-size:14px}.hg{font-size:13px;color:var(--mt);font-weight:700}
+    .hr{display:flex;align-items:center;gap:10px}
+    .hf{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mt)}
+    .ft{width:90px;height:6px;background:var(--bd);border-radius:3px;overflow:hidden}
+    .ff{height:100%;width:0%;border-radius:3px;transition:width .6s;background:linear-gradient(90deg,var(--or),var(--dn))}
+    .sb{background:none;border:1px solid var(--bd);color:var(--mt);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+    .sb:hover{border-color:var(--ac);color:var(--ac)}
 
-    /* === مقدمة المستوى === */
-    #intro-screen{background:var(--bg);padding:20px}
-    .intro-box{
-      background:var(--card);border:1px solid var(--border);border-radius:20px;
-      padding:32px;max-width:440px;width:95%;text-align:center;
-    }
-    .intro-lvl{color:var(--accent);font-size:13px;font-weight:700;letter-spacing:4px;margin-bottom:6px}
-    .intro-emoji{font-size:70px;margin:12px 0;animation:gBob 2.5s ease-in-out infinite;filter:drop-shadow(0 0 20px var(--ghost-glow))}
-    .intro-name{font-size:26px;font-weight:900;margin-bottom:2px}
-    .intro-pers{color:var(--muted);font-size:14px;font-style:italic;margin-bottom:14px}
-    .intro-desc{font-size:15px;line-height:1.8;color:var(--text);opacity:.85;margin-bottom:24px}
-    @keyframes gBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+    /* ===== الغرفة ===== */
+    .rwrap{flex:1;width:100%;position:relative;overflow:hidden}
+    .room{position:absolute;inset:4px;border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,.02)}
+    .rw{position:absolute;top:0;width:100%;height:60%;transition:background .6s}
+    .rf{position:absolute;bottom:0;width:100%;height:40%;border-top:1px solid rgba(255,255,255,.03)}
+    .rfl{position:absolute;top:0;width:100%;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent)}
+    /* أرضية خشبية */
+    .rf-wood{position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(255,255,255,.012) 48px,rgba(255,255,255,.012) 49px),repeating-linear-gradient(0deg,transparent,transparent 120px,rgba(255,255,255,.008) 120px,rgba(255,255,255,.008) 121px);pointer-events:none}
+    /* جدار خشن */
+    .rw-texture{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 20px,rgba(255,255,255,.005) 20px,rgba(255,255,255,.005) 21px);pointer-events:none}
 
-    /* === شاشة اللعب === */
-    #game-screen{justify-content:flex-start;background:var(--bg)}
+    /* نافذة */
+    .window-frame{position:absolute;z-index:4;pointer-events:none}
+    .window-glass{width:100%;height:100%;background:linear-gradient(180deg,rgba(20,30,55,.6),rgba(10,15,30,.8));border:2px solid rgba(80,90,110,.3);border-radius:2px;box-shadow:inset 0 0 20px rgba(40,60,100,.15)}
+    .window-cross-v{position:absolute;left:50%;top:0;width:2px;height:100%;background:rgba(80,90,110,.25);transform:translateX(-50%)}
+    .window-cross-h{position:absolute;top:50%;left:0;width:100%;height:2px;background:rgba(80,90,110,.25);transform:translateY(-50%)}
+    .moonlight{position:absolute;z-index:2;pointer-events:none;background:linear-gradient(160deg,rgba(60,80,140,.06),transparent 60%);border-radius:0 0 0 80%}
 
-    /* HUD */
-    .hud{
-      width:100%;height:48px;display:flex;align-items:center;justify-content:space-between;
-      padding:0 14px;background:rgba(12,18,26,.95);
-      border-bottom:1px solid var(--border);flex-shrink:0;z-index:20;
-    }
-    .hud-lvl{font-weight:700;color:var(--accent);font-size:14px}
-    .hud-ghost{font-size:13px;color:var(--muted)}
-    .hud-fear{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
-    .fear-track{width:100px;height:7px;background:var(--border);border-radius:4px;overflow:hidden}
-    .fear-fill{height:100%;width:0%;border-radius:4px;transition:width .5s ease;background:linear-gradient(90deg,var(--orange),var(--danger))}
+    /* أثاث */
+    .furn{position:absolute;z-index:3;pointer-events:none}
+    .furn-shadow{position:absolute;bottom:-4px;left:10%;width:80%;height:6px;background:rgba(0,0,0,.3);border-radius:50%;filter:blur(3px)}
 
-    /* حاوية الغرفة */
-    .room-wrap{flex:1;width:100%;position:relative;overflow:hidden}
-
-    /* الغرفة */
-    .room{
-      position:absolute;inset:8px;border-radius:14px;overflow:hidden;
-      border:1px solid rgba(255,255,255,.04);
-    }
-
-    /* أرضية الغرفة */
-    .r-wall{position:absolute;top:0;width:100%;height:62%;transition:background .5s}
-    .r-floor{
-      position:absolute;bottom:0;width:100%;height:38%;
-      background:linear-gradient(180deg,#0d1118,#080b10);
-      border-top:1px solid rgba(255,255,255,.03);
-    }
-    .r-floor-line{
-      position:absolute;top:0;width:100%;height:2px;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,.06),transparent);
-    }
-    /* تأثيرات الأرضية */
-    .r-floor-boards{
-      position:absolute;inset:0;
-      background:repeating-linear-gradient(90deg,transparent,transparent 48px,rgba(255,255,255,.012) 48px,rgba(255,255,255,.012) 50px);
-    }
-
-    /* أتмосفر */
-    .r-vignette{
-      position:absolute;inset:0;pointer-events:none;z-index:12;
-      background:radial-gradient(ellipse at 50% 50%,transparent 40%,rgba(8,12,18,.7) 100%);
-    }
-    .r-fog{
-      position:absolute;bottom:0;width:200%;height:50px;z-index:11;pointer-events:none;
-      background:linear-gradient(to top,rgba(8,12,18,.6),transparent);
-      animation:fogDrift 20s linear infinite;
-    }
-    @keyframes fogDrift{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-    .r-dust{position:absolute;inset:0;z-index:11;pointer-events:none}
-    .dust{
-      position:absolute;width:2px;height:2px;background:rgba(200,204,224,.25);
-      border-radius:50%;animation:dustFloat 8s ease-in-out infinite;
-    }
-    @keyframes dustFloat{
-      0%,100%{transform:translate(0,0);opacity:.15}
-      25%{transform:translate(10px,-20px);opacity:.35}
-      50%{transform:translate(-5px,-10px);opacity:.2}
-      75%{transform:translate(15px,-30px);opacity:.3}
-    }
+    /* تأثيرات الغرفة */
+    .rv{position:absolute;inset:0;pointer-events:none;z-index:13;background:radial-gradient(ellipse at 50% 50%,transparent 25%,rgba(5,8,16,.82) 100%)}
+    .rfg{position:absolute;bottom:0;width:200%;height:50px;z-index:12;pointer-events:none;background:linear-gradient(to top,rgba(5,8,16,.55),transparent);animation:fgd 25s linear infinite}
+    @keyframes fgd{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+    .rdst{position:absolute;inset:0;z-index:11;pointer-events:none}
+    .dst{position:absolute;width:1.5px;height:1.5px;background:rgba(200,204,224,.12);border-radius:50%;animation:df 10s ease-in-out infinite}
+    @keyframes df{0%,100%{transform:translate(0,0);opacity:.06}25%{transform:translate(8px,-14px);opacity:.18}75%{transform:translate(12px,-20px);opacity:.12}}
 
     /* ثيمات الغرف */
-    .theme-mansion .r-wall{background:linear-gradient(180deg,#14111c,#1a1624,#1e1a28)}
-    .theme-living .r-wall{background:linear-gradient(180deg,#121612,#161e16,#1a2418)}
-    .theme-vintage .r-wall{background:linear-gradient(180deg,#1a1212,#201616,#261c1c)}
-    .theme-basement .r-wall{background:linear-gradient(180deg,#101214,#141618,#181c1e)}
-    .theme-boss .r-wall{background:linear-gradient(180deg,#140a1a,#1c0e24,#221430)}
+    .tm .rw{background:linear-gradient(180deg,#12101c,#16131f,#1a1724)}
+    .tm .rf{background:linear-gradient(180deg,#0e1018,#080b12)}
+    .tl .rw{background:linear-gradient(180deg,#10140f,#141c14,#182018)}
+    .tl .rf{background:linear-gradient(180deg,#0c100e,#080c0a)}
+    .tv .rw{background:linear-gradient(180deg,#181010,#1e1414,#221818)}
+    .tv .rf{background:linear-gradient(180deg,#100c0c,#0c0808)}
+    .tbs .rw{background:linear-gradient(180deg,#0e1014,#121618,#161c1e)}
+    .tbs .rf{background:linear-gradient(180deg,#0a0c10,#060810)}
+    .tbo .rw{background:linear-gradient(180deg,#120a18,#1a0e22,#200e28)}
+    .tbo .rf{background:linear-gradient(180deg,#0e080e,#08060c)}
 
-    /* === الشبح CSS === */
-    .ghost-entity{
-      position:absolute;z-index:8;cursor:pointer;
-      transition:left 1.6s ease,top 1.6s ease;
-    }
-    .ghost-vis{
-      position:relative;width:56px;height:72px;
-      animation:gBob 2.5s ease-in-out infinite;
-    }
-    .g-head{
-      width:48px;height:42px;margin:0 auto;position:relative;
-      background:radial-gradient(ellipse at 50% 35%,rgba(210,214,230,.88),rgba(160,165,190,.45));
-      border-radius:50% 50% 38% 38%;
-      box-shadow:0 0 25px var(--ghost-glow),inset 0 -6px 12px rgba(0,0,0,.1);
-    }
-    .g-eye{
-      position:absolute;width:9px;height:11px;background:#0e0a1a;
-      border-radius:50%;top:16px;overflow:hidden;
-      transition:all .3s;
-    }
-    .g-eye.l{left:10px}.g-eye.r{right:10px}
-    .g-pupil{
-      width:4px;height:5px;background:var(--danger);border-radius:50%;
-      margin:3px auto;box-shadow:0 0 5px rgba(255,23,68,.5);
-      transition:all .3s;
-    }
-    .g-mouth{
-      position:absolute;bottom:6px;left:50%;transform:translateX(-50%);
-      width:8px;height:5px;background:#0e0a1a;border-radius:50%;
-      transition:all .3s;
-    }
-    .g-tail{
-      width:48px;height:28px;margin:-2px auto 0;
-      background:linear-gradient(180deg,rgba(190,195,215,.5),rgba(160,165,190,.15));
-      clip-path:polygon(0% 0%,100% 0%,100% 55%,83% 100%,66% 55%,50% 100%,33% 55%,16% 100%,0% 55%);
-    }
-    .g-shadow{
-      position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);
-      width:40px;height:8px;background:rgba(0,0,0,.25);
-      border-radius:50%;filter:blur(3px);
-    }
-    /* حالات الشبح */
-    .ghost-entity.scared .g-eye{width:12px;height:14px;top:13px}
-    .ghost-entity.scared .g-pupil{width:5px;height:6px;background:#ff5252;box-shadow:0 0 8px rgba(255,82,82,.7)}
-    .ghost-entity.scared .g-mouth{width:12px;height:9px;bottom:4px}
-    .ghost-entity.scared .g-head{animation:gShake .15s ease-in-out infinite}
-    .ghost-entity.scared .ghost-vis{filter:drop-shadow(0 0 15px rgba(255,23,68,.3))}
-    @keyframes gShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+    /* ===== الشبح ===== */
+    .ge{position:absolute;z-index:8;cursor:pointer;transition:left 1.8s ease,top 1.8s ease}
+    .ge .gchar-lg{width:80px;height:110px}
+    .ge .ghead-lg{width:68px;height:58px}
+    .ge .geye-lg{width:12px;height:14px;top:18px}.ge .geye-lg.l{left:14px}.ge .geye-lg.r{right:14px}
+    .ge .gpup-lg{width:5px;height:6px}
+    .ge .gtail-lg{width:68px;height:30px}
+    .gsh{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:50px;height:8px;background:rgba(0,0,0,.15);border-radius:50%;filter:blur(4px)}
+    /* حالة الخوف */
+    .ge.scared .geye-lg{width:16px;height:18px;top:14px}
+    .ge.scared .gpup-lg{width:7px;height:8px;background:#ff5252;box-shadow:0 0 12px rgba(255,82,82,.8)}
+    .ge.scared .gmou-lg{width:14px;height:10px;bottom:6px}
+    .ge.scared .ghead-lg{animation:gsk .08s ease-in-out infinite}
+    .ge.scared .gchar-lg{filter:drop-shadow(0 0 18px rgba(255,23,68,.2))}
+    @keyframes gsk{0%,100%{transform:translateX(0)}25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+    .ge.amused .geye-lg{height:8px;top:20px}
+    .ge.amused .gmou-lg{width:12px;height:3px;bottom:10px;border-radius:3px 3px 0 0}
+    .ge.annoyed .geye-lg{height:7px;top:20px}
+    .ge.annoyed .gmou-lg{width:6px;height:2px;bottom:12px}
+    .ge.fleeing .gchar-lg{animation:gfl .15s ease-in-out infinite}
+    .ge.fleeing .geye-lg{width:14px;height:18px;top:12px}
+    .ge.fleeing .gmou-lg{width:16px;height:10px;bottom:4px}
+    .ge.fleeing{transition:left .35s ease,top .35s ease}
+    @keyframes gfl{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-6px) rotate(6deg)}}
+    .ge.gone{display:none}
+    /* أثر طيفي */
+    .gtrail{position:absolute;z-index:7;pointer-events:none;border-radius:50%;background:rgba(180,185,210,.08);animation:trailf 1.2s ease forwards}
+    @keyframes trailf{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(.3) translateY(-10px)}}
 
-    .ghost-entity.amused .g-eye{height:6px;top:19px}
-    .ghost-entity.amused .g-mouth{width:10px;height:3px;bottom:7px;border-radius:2px 2px 0 0}
+    .gwhisp{position:absolute;z-index:9;font-size:12px;color:rgba(200,204,224,.25);pointer-events:none;animation:gwhp 2.8s ease forwards;white-space:nowrap;font-style:italic;font-weight:300}
+    @keyframes gwhp{0%{opacity:0;transform:translateY(0)}20%{opacity:.8}80%{opacity:.3}100%{opacity:0;transform:translateY(-30px)}}
 
-    .ghost-entity.annoyed .g-eye{height:7px;top:18px}
-    .ghost-entity.annoyed .g-mouth{width:6px;height:2px;bottom:9px}
+    /* ===== اللاعب ===== */
+    .pl{position:absolute;z-index:7;transition:left .55s ease,top .55s ease;filter:drop-shadow(0 3px 6px rgba(0,0,0,.5))}
+    .pl i{font-size:36px;color:#e0e0e0}
 
-    .ghost-entity.fleeing .ghost-vis{animation:gFlee .3s ease-in-out infinite}
-    .ghost-entity.fleeing .g-eye{width:10px;height:14px;top:12px}
-    .ghost-entity.fleeing .g-mouth{width:14px;height:10px;bottom:2px}
-    .ghost-entity.fleeing{transition:left .5s ease,top .5s ease}
-    @keyframes gFlee{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-5px) rotate(5deg)}}
+    /* ===== الأجسام ===== */
+    .ro{position:absolute;z-index:6;cursor:pointer;transition:transform .2s,filter .2s}
+    .ro:hover{transform:scale(1.1) translateY(-3px);filter:brightness(1.25)}
+    .ro:active{transform:scale(.9)}
+    .oic{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 4px 14px rgba(0,0,0,.4);transition:all .3s;position:relative;overflow:hidden}
+    .oic::after{content:'';position:absolute;inset:0;border-radius:14px;background:linear-gradient(135deg,rgba(255,255,255,.06),transparent 50%);pointer-events:none}
+    .ro:hover .oic{box-shadow:0 6px 22px rgba(0,0,0,.5)}
+    .olb{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-size:9px;color:var(--mt);white-space:nowrap;background:rgba(5,8,16,.8);padding:2px 7px;border-radius:4px;pointer-events:none;font-weight:700;letter-spacing:.3px}
+    .ro.col{display:none}
+    .ro.hid{display:none}
+    .ro.rev{display:block;animation:orv .45s ease}
+    @keyframes orv{0%{transform:scale(0);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+    .ro.rattle .oic{animation:ratl .4s ease}
+    @keyframes ratl{0%,100%{transform:translateX(0)}20%{transform:translateX(-5px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
 
-    .ghost-entity.gone{display:none}
+    .ecto{position:absolute;width:10px;height:10px;border-radius:50%;background:rgba(0,230,118,.35);box-shadow:0 0 14px rgba(0,230,118,.25);z-index:9;pointer-events:none;animation:ecta 1.6s ease forwards}
+    @keyframes ecta{0%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(0) translateY(-24px)}}
 
-    /* === اللاعبة === */
-    .player-char{
-      position:absolute;z-index:7;font-size:34px;
-      transition:left .55s ease,top .55s ease;
-      filter:drop-shadow(0 3px 5px rgba(0,0,0,.5));
-    }
+    .dring{position:absolute;border:2px solid var(--gd);border-radius:50%;z-index:14;pointer-events:none;animation:drng 1.1s ease forwards}
+    @keyframes drng{0%{opacity:1;width:10px;height:10px}100%{opacity:0;width:140px;height:140px}}
 
-    /* === أجسام الغرفة === */
-    .r-obj{
-      position:absolute;z-index:6;cursor:pointer;
-      transition:transform .2s,filter .2s;
-    }
-    .r-obj:hover{transform:scale(1.15);filter:brightness(1.2)}
-    .r-obj:active{transform:scale(.95)}
-    .r-obj-inner{
-      display:flex;flex-direction:column;align-items:center;gap:2px;
-    }
-    .r-obj-emoji{
-      font-size:32px;
-      filter:drop-shadow(0 2px 4px rgba(0,0,0,.4));
-      transition:filter .2s;
-    }
-    .r-obj:hover .r-obj-emoji{filter:drop-shadow(0 0 10px rgba(0,230,118,.35))}
-    .r-obj-label{
-      font-size:9px;color:var(--muted);white-space:nowrap;
-      background:rgba(8,12,18,.75);padding:1px 7px;border-radius:4px;
-      pointer-events:none;letter-spacing:.3px;
-    }
-    .r-obj.collected{display:none}
-    .r-obj.hidden-obj{display:none}
-    .r-obj.revealed{display:block;animation:objReveal .4s ease}
-    @keyframes objReveal{0%{transform:scale(0);opacity:0}60%{transform:scale(1.2)}100%{transform:scale(1);opacity:1}}
+    /* ===== المخزن ===== */
+    .inv{width:100%;min-height:66px;padding:8px 12px;background:rgba(6,10,18,.92);border-top:1px solid rgba(255,255,255,.04);display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:20;overflow-x:auto;backdrop-filter:blur(8px)}
+    .invl{font-size:11px;color:var(--mt);white-space:nowrap;margin-left:6px}
+    .islt{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;background:var(--cd);border:2px solid var(--bd);cursor:pointer;transition:all .2s;flex-shrink:0;position:relative;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+    .islt:hover{border-color:var(--ac);transform:scale(1.08)}
+    .islt.sel{border-color:var(--ac);background:rgba(0,230,118,.06);box-shadow:0 0 16px rgba(0,230,118,.2)}
+    .isn{position:absolute;bottom:-13px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--mt);white-space:nowrap;font-family:'Cairo',sans-serif}
+    .ie{color:var(--mt);font-size:12px;opacity:.25}
 
-    /* تأثير الالتقاط */
-    .pickup-fx{
-      position:absolute;font-size:20px;z-index:15;pointer-events:none;
-      animation:pickUp .6s ease forwards;
-    }
-    @keyframes pickUp{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-40px)}}
+    /* ===== حوار ===== */
+    .dlg{position:absolute;z-index:18;background:rgba(12,18,30,.94);border:1px solid var(--bd);border-radius:14px;padding:10px 18px;max-width:70%;font-size:13px;line-height:1.6;text-align:center;animation:dlgI .3s ease;pointer-events:none;box-shadow:0 6px 24px rgba(0,0,0,.4);backdrop-filter:blur(6px)}
+    @keyframes dlgI{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
 
-    /* === الإنفنتوري === */
-    .inv-bar{
-      width:100%;min-height:68px;padding:8px 12px;
-      background:rgba(12,18,26,.95);border-top:1px solid var(--border);
-      display:flex;align-items:center;gap:6px;flex-shrink:0;z-index:20;
-      overflow-x:auto;overflow-y:hidden;
-    }
-    .inv-label{font-size:11px;color:var(--muted);white-space:nowrap;margin-left:6px}
-    .inv-slot{
-      font-size:26px;padding:5px 9px;
-      background:var(--card);border:2px solid var(--border);border-radius:10px;
-      cursor:pointer;transition:all .2s;flex-shrink:0;position:relative;
-    }
-    .inv-slot:hover{border-color:var(--accent);transform:scale(1.08)}
-    .inv-slot.sel{
-      border-color:var(--accent);background:rgba(0,230,118,.08);
-      box-shadow:0 0 14px rgba(0,230,118,.3);
-    }
-    .inv-slot-name{
-      position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);
-      font-size:8px;color:var(--muted);white-space:nowrap;font-family:'Cairo',sans-serif;
-    }
-    .inv-empty{color:var(--muted);font-size:12px;opacity:.4}
+    /* ===== تنبيهات ===== */
+    .tbc{position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:5px;align-items:center;max-width:95vw}
+    .tst{background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:8px 16px;font-size:13px;animation:tstI .3s ease;text-align:center;max-width:92vw;backdrop-filter:blur(6px)}
+    .tst.disc{border-color:var(--gd);background:rgba(255,215,64,.06);color:var(--gd);font-weight:700;box-shadow:0 0 24px rgba(255,215,64,.08)}
+    .tst.ok{border-color:var(--ac);background:rgba(0,230,118,.06);color:var(--ac)}
+    .tst.err{border-color:var(--dn);background:rgba(255,23,68,.05);color:var(--dn)}
+    @keyframes tstI{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 
-    /* === التلميح === */
-    .hint{
-      position:absolute;bottom:72px;left:50%;transform:translateX(-50%);
-      background:rgba(8,12,18,.85);border:1px solid var(--border);border-radius:8px;
-      padding:5px 14px;font-size:11px;color:var(--muted);z-index:15;
-      white-space:nowrap;pointer-events:none;max-width:90vw;overflow:hidden;
-      text-overflow:ellipsis;
-    }
+    /* ===== تأثيرات ===== */
+    .fxfl{position:absolute;inset:0;z-index:14;pointer-events:none;animation:fxflA .6s ease forwards}
+    @keyframes fxflA{0%{background:rgba(255,215,64,.12)}50%{background:rgba(255,215,64,.02)}100%{background:transparent}}
+    .fxw{position:absolute;inset:0;z-index:14;pointer-events:none;animation:fxwA 1.2s ease forwards}
+    @keyframes fxwA{0%{background:rgba(0,230,118,.08)}50%{background:rgba(0,230,118,.02)}100%{background:transparent}}
+    .sshk{animation:shkA .35s ease}
+    @keyframes shkA{0%,100%{transform:translate(0)}25%{transform:translate(-3px,3px)}50%{transform:translate(3px,-3px)}75%{transform:translate(-3px,3px)}}
+    .bglw{position:absolute;width:60px;height:60px;border-radius:50%;background:radial-gradient(circle,rgba(255,235,59,.18),transparent 70%);pointer-events:none;z-index:5;animation:bglwA 1.5s ease-in-out infinite}
+    @keyframes bglwA{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
 
-    /* === الحوار === */
-    .dialog{
-      position:absolute;z-index:18;
-      background:rgba(18,26,38,.94);border:1px solid var(--border);border-radius:12px;
-      padding:10px 18px;max-width:80%;font-size:14px;line-height:1.6;
-      text-align:center;animation:dlgIn .25s ease;pointer-events:none;
-      box-shadow:0 4px 20px rgba(0,0,0,.4);
-    }
-    @keyframes dlgIn{from{opacity:0;transform:translateX(-50%) translateY(8px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+    /* ===== نتائج ===== */
+    #lc,#gc{background:var(--bg);padding:20px}
+    .lcb,.gcb{background:var(--cd);border-radius:18px;padding:32px;max-width:420px;width:92%;text-align:center}
+    .lcb{border:1px solid rgba(0,230,118,.3);box-shadow:0 0 30px rgba(0,230,118,.06)}
+    .gcb{border:1px solid rgba(0,230,118,.4);box-shadow:0 0 40px rgba(0,230,118,.08)}
+    .lct{font-size:24px;font-weight:900;color:var(--ac);margin-bottom:8px}
+    .lcw{font-size:15px;color:var(--gd);margin:8px 0}
+    .lcd{color:var(--mt);font-size:13px;line-height:1.7;margin-bottom:20px}
+    .gct{font-size:28px;font-weight:900;color:var(--ac);margin-bottom:10px}
+    .gcg{display:flex;justify-content:center;gap:12px;margin:16px 0;flex-wrap:wrap}
+    .gci{background:rgba(0,0,0,.3);border-radius:14px;padding:10px;font-size:12px;color:var(--mt);min-width:80px}
+    .gci .gn{font-weight:700;display:block;margin-bottom:3px}
+    .gci .gf{color:var(--gd);font-size:11px}
 
-    /* === التنبيهات === */
-    .toast-box{position:fixed;top:56px;left:50%;transform:translateX(-50%);z-index:100;display:flex;flex-direction:column;gap:6px;align-items:center;max-width:95vw}
-    .toast{
-      background:var(--card);border:1px solid var(--border);border-radius:10px;
-      padding:8px 18px;font-size:14px;animation:tIn .3s ease;
-      text-align:center;max-width:90vw;
-    }
-    .toast.disc{border-color:var(--gold);background:rgba(255,215,64,.08);color:var(--gold);font-weight:700;box-shadow:0 0 25px rgba(255,215,64,.15)}
-    .toast.ok{border-color:var(--accent);background:rgba(0,230,118,.08);color:var(--accent)}
-    .toast.err{border-color:var(--danger);background:rgba(255,23,68,.08);color:var(--danger)}
-    @keyframes tIn{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+    /* ===== شمعة متوهجة ===== */
+    .candle-glow{position:absolute;z-index:4;pointer-events:none;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,150,30,.06),transparent 70%);animation:cglow 2s ease-in-out infinite alternate}
+    @keyframes cglow{0%{opacity:.6;transform:scale(1)}100%{opacity:1;transform:scale(1.15)}}
 
-    /* === تأثيرات === */
-    .fx-flash{
-      position:absolute;inset:0;z-index:14;pointer-events:none;
-      animation:flash .5s ease forwards;
-    }
-    @keyframes flash{0%{background:rgba(255,215,64,.18)}50%{background:rgba(255,215,64,.05)}100%{background:transparent}}
-    .fx-scare{
-      position:absolute;inset:0;z-index:14;pointer-events:none;
-      animation:scareFx .4s ease forwards;
-    }
-    @keyframes scareFx{0%{background:rgba(255,23,68,.2)}100%{background:transparent}}
-    .fx-win{
-      position:absolute;inset:0;z-index:14;pointer-events:none;
-      animation:winFx 1s ease forwards;
-    }
-    @keyframes winFx{0%{background:rgba(0,230,118,.15)}50%{background:rgba(0,230,118,.05)}100%{background:transparent}}
-    .screen-shake{animation:shake .3s ease}
-    @keyframes shake{0%,100%{transform:translate(0)}25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,3px)}}
+    /* ===== شبكة العنكبوت ===== */
+    .cobweb{position:absolute;z-index:4;pointer-events:none;opacity:.08}
 
-    /* لمبات تنور */
-    .bulb-glow{
-      position:absolute;width:60px;height:60px;border-radius:50%;
-      background:radial-gradient(circle,rgba(255,235,59,.3),transparent 70%);
-      pointer-events:none;z-index:5;animation:bulbPulse 1.5s ease-in-out infinite;
-    }
-    @keyframes bulbPulse{0%,100%{opacity:.7;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
-
-    /* === شاشات النتايج === */
-    #lc-screen,#gc-screen{background:var(--bg);padding:20px}
-    .lc-box,.gc-box{
-      background:var(--card);border-radius:20px;padding:32px;
-      max-width:420px;width:95%;text-align:center;
-    }
-    .lc-box{border:1px solid var(--accent);box-shadow:0 0 35px rgba(0,230,118,.12)}
-    .gc-box{border:2px solid var(--accent);box-shadow:0 0 45px rgba(0,230,118,.18)}
-    .lc-title{font-size:26px;font-weight:900;color:var(--accent);margin-bottom:8px}
-    .lc-emoji{font-size:50px;margin:8px 0;opacity:.5}
-    .lc-weak{font-size:16px;color:var(--gold);margin:8px 0}
-    .lc-txt{color:var(--muted);font-size:14px;line-height:1.7;margin-bottom:20px}
-    .gc-title{font-size:30px;font-weight:900;color:var(--accent);margin-bottom:12px}
-    .gc-ghosts{display:flex;justify-content:center;gap:14px;margin:18px 0;flex-wrap:wrap}
-    .gc-g{
-      background:rgba(0,0,0,.3);border-radius:12px;padding:10px;
-      font-size:13px;color:var(--muted);min-width:80px;
-    }
-    .gc-g .ge{font-size:28px;display:block;margin-bottom:4px}
-    .gc-g .gf{color:var(--gold);font-size:11px}
-
-    /* ريسبونسف */
-    @media(max-width:500px){
-      .r-obj-emoji{font-size:26px}
-      .ghost-vis{width:44px;height:58px}
-      .g-head{width:38px;height:34px}
-      .g-eye{width:7px;height:9px;top:12px}
-      .g-eye.l{left:8px}.g-eye.r{right:8px}
-      .g-tail{width:38px;height:22px}
-      .player-char{font-size:28px}
-      .inv-slot{font-size:22px;padding:4px 7px}
-      .menu-title{letter-spacing:3px}
-      .logo-ghost{width:100px;height:120px}
-    }
+    @media(max-width:500px){.oic{width:44px;height:44px;font-size:18px}.ge .gchar-lg{width:64px;height:88px}.ge .ghead-lg{width:56px;height:48px}.ge .geye-lg{width:10px;height:11px;top:14px}.pl i{font-size:30px}.islt{width:38px;height:38px;font-size:16px}}
   </style>
 </head>
 <body>
 
-  <div id="menu-screen" class="screen active">
-    <div class="menu-particles" id="m-particles"></div>
-    <div class="logo-ghost" id="logo-ghost"></div>
-    <div class="menu-title">GHOST</div>
-    <div class="menu-sub">الشبح اللي بيخاف منك</div>
-    <button class="btn btn-primary" onclick="startGame()"><i class="fas fa-play"></i>&nbsp; ابدأي اللعب</button>
-    <button class="btn btn-sec" onclick="showScr('howto-screen')" style="margin-top:8px"><i class="fas fa-question-circle"></i>&nbsp; إزاي تلعبي</button>
-  </div>
+<div id="menu" class="scr on">
+  <div class="mpc" id="mpc"></div>
+  <div id="menuGhost"></div>
+  <div class="mt1">GHOST</div>
+  <div class="mt2">الشبح اللي بيخاف منك</div>
+  <button class="btn bp" id="playBtn"><i class="fas fa-ghost"></i>&nbsp; يلا</button>
+</div>
 
-  <div id="howto-screen" class="screen">
-    <div class="howto-box">
-      <h2><i class="fas fa-gamepad"></i> إزاي تلعبي</h2>
-      <div class="how-step"><span class="how-icon">👆</span><span class="how-text">اضغطي على الأشياء في الغرفة عشان تلتقطيها أو تتفاعلي معاها</span></div>
-      <div class="how-step"><span class="how-icon">🎒</span><span class="how-text">الحاجات اللي بتلتقطيها بتروح للشنطة في الأسفل</span></div>
-      <div class="how-step"><span class="how-icon">🎯</span><span class="how-text">اختاري حاجة من الشنطة وبعدين اضغطي على الشبح عشان تستخدميها</span></div>
-      <div class="how-step"><span class="how-icon">🔍</span><span class="how-text">جربي حاجات مختلفة — كل شبح بيخاف من حاجة تانية</span></div>
-      <div class="how-step"><span class="how-icon">😱</span><span class="how-text">لما تكتشفي نقطة الضعف استخدميها 3 مرات عشان الشبح يهرب</span></div>
-      <div class="how-step"><span class="how-icon">🧩</span><span class="how-text">بعض الحاجات لازم تدمجيها مع بعض الأول!</span></div>
-      <div style="margin-top:18px;text-align:center">
-        <button class="btn btn-primary" onclick="showScr('menu-screen')"><i class="fas fa-arrow-right"></i>&nbsp; رجعي</button>
-      </div>
+<div id="intro" class="scr"><div class="ibx" id="ibx"></div></div>
+
+<div id="game" class="scr">
+  <div class="hud">
+    <div class="hl" id="hl"></div>
+    <div class="hg" id="hg"></div>
+    <div class="hr">
+      <div class="hf"><span>خوف</span><div class="ft"><div class="ff" id="ffl"></div></div><span id="fpc">0%</span></div>
+      <button class="sb" id="sbtn"><i class="fas fa-volume-up"></i></button>
     </div>
   </div>
+  <div class="rwrap" id="rwr"><div class="room" id="room"></div></div>
+  <div class="inv" id="inv"><span class="invl"><i class="fas fa-briefcase"></i></span><span class="ie">فاضي</span></div>
+</div>
 
-  <div id="intro-screen" class="screen">
-    <div class="intro-box" id="intro-box"></div>
-  </div>
-
-  <div id="game-screen" class="screen">
-    <div class="hud">
-      <div class="hud-lvl" id="hud-lvl">Level 1</div>
-      <div class="hud-ghost" id="hud-ghost">Spooky</div>
-      <div class="hud-fear">
-        <span>خوف:</span>
-        <div class="fear-track"><div class="fear-fill" id="fear-fill"></div></div>
-        <span id="fear-pct">0%</span>
-      </div>
-    </div>
-    <div class="room-wrap" id="room-wrap">
-      <div class="room" id="room"></div>
-      <div class="hint" id="hint">التقطي حاجات وجربيها على الشبح!</div>
-    </div>
-    <div class="inv-bar" id="inv-bar">
-      <span class="inv-label"><i class="fas fa-briefcase"></i></span>
-      <span class="inv-empty">فاضي</span>
-    </div>
-  </div>
-
-  <div id="lc-screen" class="screen">
-    <div class="lc-box" id="lc-box"></div>
-  </div>
-
-  <div id="gc-screen" class="screen">
-    <div class="gc-box" id="gc-box"></div>
-  </div>
-
-  <div class="toast-box" id="toast-box"></div>
+<div id="lc" class="scr"><div class="lcb" id="lcb"></div></div>
+<div id="gc" class="scr"><div class="gcb" id="gcb"></div></div>
+<div class="tbc" id="tbc"></div>
 
 <script>
-/* =========================================
-   لوجو SVG + فافيكون + PWA
-========================================= */
-const ghostSVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
-  <defs>
-    <radialGradient id="gg" cx="50%" cy="35%" r="55%">
-      <stop offset="0%" stop-color="#d4d8ec" stop-opacity=".92"/>
-      <stop offset="100%" stop-color="#9ea4c0" stop-opacity=".45"/>
-    </radialGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/>
-      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-  </defs>
-  <path d="M18 52 C18 24 28 12 50 12 C72 12 82 24 82 52 L82 92 L72 80 L62 92 L52 80 L42 92 L32 80 L18 92 Z" fill="url(#gg)" filter="url(#glow)"/>
-  <ellipse cx="37" cy="44" rx="8" ry="9" fill="#0e0a1a"/>
-  <ellipse cx="63" cy="44" rx="8" ry="9" fill="#0e0a1a"/>
-  <ellipse cx="37" cy="44" rx="4" ry="5" fill="#ff1744">
-    <animate attributeName="rx" values="4;5;4" dur="2s" repeatCount="indefinite"/>
-  </ellipse>
-  <ellipse cx="63" cy="44" rx="4" ry="5" fill="#ff1744">
-    <animate attributeName="rx" values="4;5;4" dur="2s" repeatCount="indefinite"/>
-  </ellipse>
-  <ellipse cx="50" cy="62" rx="6" ry="4" fill="#0e0a1a"/>
-</svg>`;
+/* ===== شبح SVG كبير ===== */
+var gSVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 130"><defs><radialGradient id="gg" cx="50%" cy="30%" r="58%"><stop offset="0%" stop-color="#d0d4e8" stop-opacity=".75"/><stop offset="70%" stop-color="#a0a4c0" stop-opacity=".3"/><stop offset="100%" stop-color="#8084a0" stop-opacity=".08"/></radialGradient><filter id="gl"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><filter id="wsp"><feTurbulence type="fractalNoise" baseFrequency=".04" numOctaves="3" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3" xChannelSelector="R" yChannelSelector="G"/></filter></defs><path d="M16 52C16 20 28 8 50 8 72 8 84 20 84 52L84 105 73 92 63 105 53 92 43 105 33 92 16 105Z" fill="url(#gg)" filter="url(#gl)" opacity=".85"/><ellipse cx="36" cy="40" rx="9" ry="10" fill="#0a0618"/><ellipse cx="64" cy="40" rx="9" ry="10" fill="#0a0618"/><ellipse cx="36" cy="40" rx="5" ry="6" fill="#ff1744"><animate attributeName="rx" values="5;6;5" dur="2.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.7;1" dur="1.5s" repeatCount="indefinite"/></ellipse><ellipse cx="64" cy="40" rx="5" ry="6" fill="#ff1744"><animate attributeName="rx" values="5;6;5" dur="2.5s" repeatCount="indefinite"/><animate attributeName="opacity" values="1;.7;1" dur="1.5s" repeatCount="indefinite"/></ellipse><ellipse cx="50" cy="60" rx="7" ry="4" fill="#0a0618"/></svg>';
+document.getElementById("menuGhost").innerHTML='<div class="menu-ghost">'+gSVG+'</div>';
 
-// لوجو في القائمة
-document.getElementById('logo-ghost').innerHTML = ghostSVG;
+var fSVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="22" fill="#050810"/><path d="M22 50C22 26 32 14 50 14 68 14 78 26 78 50L78 76 70 66 62 76 54 66 46 76 38 66 22 76Z" fill="#c0c4d8" opacity=".7"/><circle cx="40" cy="42" r="6" fill="#0a0618"/><circle cx="60" cy="42" r="6" fill="#0a0618"/><circle cx="40" cy="42" r="3" fill="#ff1744"/><circle cx="60" cy="42" r="3" fill="#ff1744"/></svg>';
+var fU="data:image/svg+xml,"+encodeURIComponent(fSVG);
+var fl1=document.createElement("link");fl1.rel="icon";fl1.type="image/svg+xml";fl1.href=fU;document.head.appendChild(fl1);
+var fl2=document.createElement("link");fl2.rel="apple-touch-icon";fl2.href=fU;document.head.appendChild(fl2);
+var mObj={name:"Ghost",short_name:"Ghost",start_url:".",display:"standalone",background_color:"#050810",theme_color:"#050810",icons:[{src:fU,sizes:"any",type:"image/svg+xml"}]};
+var ml=document.createElement("link");ml.rel="manifest";ml.href=URL.createObjectURL(new Blob([JSON.stringify(mObj)],{type:"application/json"}));document.head.appendChild(ml);
 
-// فافيكون
-const favSize = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="22" fill="#080c12"/>
-  <path d="M22 52 C22 28 32 16 50 16 C68 16 78 28 78 52 L78 78 L70 68 L62 78 L54 68 L46 78 L38 68 L22 78 Z" fill="#c8cce0" opacity=".85"/>
-  <circle cx="40" cy="44" r="6" fill="#0e0a1a"/>
-  <circle cx="60" cy="44" r="6" fill="#0e0a1a"/>
-  <circle cx="40" cy="44" r="3" fill="#ff1744"/>
-  <circle cx="60" cy="44" r="3" fill="#ff1744"/>
-</svg>`;
-const favURI = 'data:image/svg+xml,' + encodeURIComponent(favSize);
+/* ===== جزيئات القائمة ===== */
+(function(){var c=document.getElementById("mpc");for(var i=0;i<25;i++){var p=document.createElement("div");p.className="mp";p.style.left=Math.random()*100+"%";p.style.top=(35+Math.random()*65)+"%";p.style.animationDelay=Math.random()*8+"s";p.style.animationDuration=(5+Math.random()*6)+"s";c.appendChild(p)}})();
 
-const favLink = document.createElement('link');
-favLink.rel = 'icon'; favLink.type = 'image/svg+xml'; favLink.href = favURI;
-document.head.appendChild(favLink);
+/* ===== أيقونات ===== */
+var IC={candle:{i:"fa-fire",c:"#ff9800",b:"rgba(255,152,0,.1)"},painting:{i:"fa-image",c:"#8d6e63",b:"rgba(141,110,99,.1)"},mirror:{i:"fa-right-left",c:"#81d4fa",b:"rgba(129,212,250,.08)"},box:{i:"fa-box",c:"#a1887f",b:"rgba(161,136,127,.1)"},chair:{i:"fa-couch",c:"#795548",b:"rgba(121,85,72,.1)"},door:{i:"fa-door-open",c:"#6d4c41",b:"rgba(109,76,65,.12)"},cabinet:{i:"fa-box-archive",c:"#5d4037",b:"rgba(93,64,55,.1)"},catfood:{i:"fa-drumstick-bite",c:"#ff7043",b:"rgba(255,112,67,.1)"},bowl:{i:"fa-circle",c:"#bdbdbd",b:"rgba(189,189,189,.08)"},toy:{i:"fa-puzzle-piece",c:"#e91e63",b:"rgba(233,30,99,.1)"},bell:{i:"fa-bell",c:"#ffd600",b:"rgba(255,214,0,.1)"},piano:{i:"fa-music",c:"#455a64",b:"rgba(69,90,100,.12)"},cat:{i:"fa-cat",c:"#ff9800",b:"rgba(255,152,0,.12)"},batteries:{i:"fa-battery-full",c:"#66bb6a",b:"rgba(102,187,106,.1)"},camera:{i:"fa-camera",c:"#78909c",b:"rgba(120,144,156,.1)"},radio:{i:"fa-tower-broadcast",c:"#6d4c41",b:"rgba(109,76,65,.1)"},phone:{i:"fa-mobile",c:"#90a4ae",b:"rgba(144,164,174,.1)"},doily:{i:"fa-scroll",c:"#e0e0e0",b:"rgba(224,224,224,.06)"},switch_b:{i:"fa-plug",c:"#607d8b",b:"rgba(96,125,139,.1)"},toolbox:{i:"fa-toolbox",c:"#9e9e9e",b:"rgba(158,158,158,.08)"},wire:{i:"fa-plug",c:"#43a047",b:"rgba(67,160,71,.1)"},matches:{i:"fa-fire-flame-curved",c:"#f44336",b:"rgba(244,67,54,.1)"},bulb1:{i:"fa-lightbulb",c:"#616161",b:"rgba(97,97,97,.1)"},bulb2:{i:"fa-lightbulb",c:"#616161",b:"rgba(97,97,97,.1)"},bulb3:{i:"fa-lightbulb",c:"#616161",b:"rgba(97,97,97,.1)"},skull:{i:"fa-skull",c:"#e0e0e0",b:"rgba(224,224,224,.08)"},knife:{i:"fa-scissors",c:"#b0bec5",b:"rgba(176,190,197,.08)"},garlic:{i:"fa-seedling",c:"#8bc34a",b:"rgba(139,195,74,.1)"},cross:{i:"fa-cross",c:"#ffd600",b:"rgba(255,214,0,.1)"},bomb:{i:"fa-bomb",c:"#f44336",b:"rgba(244,67,54,.1)"},bag:{i:"fa-bag-shopping",c:"#a1887f",b:"rgba(161,136,127,.1)"},potato:{i:"fa-apple-whole",c:"#8d6e63",b:"rgba(141,110,99,.12)"},light:{i:"fa-lightbulb",c:"#ffeb3b",b:"rgba(255,235,59,.12)"},drawer:{i:"fa-box-archive",c:"#5d4037",b:"rgba(93,64,55,.1)"}};
+var NM={potato:"بطاطس",catfood:"أكل قطط",wire:"أسلاك",light:"ضوء",cat:"قطة",switch_b:"مفتاح",batteries:"بطاريات",camera:"كاميرا",candle:"شمعة",mirror:"مراية",matches:"كبريت",skull:"جمجمة",knife:"سكينة",garlic:"توم",cross:"صليب",bomb:"قنبلة",bag:"شنطة",toy:"لعبة",bell:"جرس",radio:"راديو",phone:"تليفون",toolbox:"علبة عدة",bulb1:"لمبة",bulb2:"لمبة",bulb3:"لمبة",painting:"لوحة",box:"صندوق",chair:"كرسي",door:"باب",cabinet:"خزانة",bowl:"طبق",piano:"بيانو",doily:"كروشيه",drawer:"درج"};
 
-const appleLink = document.createElement('link');
-appleLink.rel = 'apple-touch-icon'; appleLink.href = favURI;
-document.head.appendChild(appleLink);
-
-// PWA manifest
-const manifest = {
-  name: "Ghost", short_name: "Ghost",
-  description: "الشبح اللي بيخاف منك - لعبة ألغاز",
-  start_url: ".", display: "standalone",
-  background_color: "#080c12", theme_color: "#080c12",
-  icons: [{ src: favURI, sizes: "any", type: "image/svg+xml" }]
+/* ===== أثاث الغرف ===== */
+var FURN={
+  tm:[/* غرفة نوم */
+    {t:'bed',x:5,y:42,w:32,h:18,css:'background:linear-gradient(180deg,rgba(40,35,50,.5),rgba(30,25,40,.6));border-radius:3px;box-shadow:0 4px 12px rgba(0,0,0,.4)'},
+    {t:'headboard',x:5,y:36,w:6,h:24,css:'background:rgba(35,30,45,.65);border-radius:2px 2px 0 0'},
+    {t:'pillow',x:12,y:44,w:10,h:5,css:'background:rgba(180,175,190,.08);border-radius:8px'},
+    {t:'nightstand',x:40,y:50,w:8,h:10,css:'background:rgba(35,30,45,.5);border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.3)'},
+    {t:'wardrobe',x:85,y:20,w:10,h:28,css:'background:rgba(30,25,40,.55);border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.35)'}
+  ],
+  tl:[/* غرفة معيشة */
+    {t:'couch',x:5,y:44,w:28,h:14,css:'background:linear-gradient(180deg,rgba(35,45,35,.5),rgba(25,35,25,.6));border-radius:4px;box-shadow:0 4px 12px rgba(0,0,0,.4)'},
+    {t:'couchback',x:5,y:38,w:28,h:8,css:'background:rgba(30,40,30,.55);border-radius:4px 4px 0 0'},
+    {t:'coffeetable',x:38,y:52,w:16,h:7,css:'background:rgba(40,35,30,.4);border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.3)'},
+    {t:'bookshelf',x:82,y:15,w:12,h:30,css:'background:rgba(30,35,25,.5);border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.3)'}
+  ],
+  tv:[/* صالة */
+    {t:'armchair',x:8,y:44,w:16,h:14,css:'background:rgba(50,30,30,.5);border-radius:6px;box-shadow:0 4px 10px rgba(0,0,0,.4)'},
+    {t:'sidetable',x:28,y:50,w:8,h:9,css:'background:rgba(40,30,28,.45);border-radius:2px;box-shadow:0 2px 6px rgba(0,0,0,.3)'},
+    {t:'bookshelf2',x:78,y:18,w:14,h:28,css:'background:rgba(40,28,28,.5);border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.3)'},
+    {t:'rug',x:30,y:58,w:30,h:8,css:'background:rgba(80,40,40,.08);border-radius:50%'}
+  ],
+  tbs:[/* قبو */
+    {t:'shelf',x:75,y:18,w:18,h:22,css:'background:rgba(25,30,35,.5);border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.35)'},
+    {t:'workbench',x:5,y:48,w:24,h:10,css:'background:rgba(30,35,40,.5);border-radius:2px;box-shadow:0 3px 8px rgba(0,0,0,.4)'},
+    {t:'pipe1',x:0,y:12,w:100,h:2,css:'background:rgba(60,70,80,.2);border-radius:1px'},
+    {t:'pipe2',x:0,y:16,w:100,h:1.5,css:'background:rgba(60,70,80,.15);border-radius:1px'}
+  ],
+  tbo:[/* عرين */
+    {t:'altar',x:30,y:44,w:28,h:12,css:'background:linear-gradient(180deg,rgba(40,20,50,.5),rgba(30,15,40,.6));border-radius:3px;box-shadow:0 4px 12px rgba(0,0,0,.5)'},
+    {t:'shelf3',x:5,y:18,w:12,h:26,css:'background:rgba(30,15,40,.5);border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.35)'},
+    {t:'shelf4',x:82,y:18,w:12,h:26,css:'background:rgba(30,15,40,.5);border-radius:2px;box-shadow:0 2px 8px rgba(0,0,0,.35)'},
+    {t:'rug2',x:25,y:56,w:38,h:10,css:'background:rgba(60,20,80,.06);border-radius:50%'}
+  ]
 };
-const mBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-const mLink = document.createElement('link');
-mLink.rel = 'manifest'; mLink.href = URL.createObjectURL(mBlob);
-document.head.appendChild(mLink);
 
-/* =========================================
-   بيانات المستويات
-========================================= */
-const LEVELS = [
-  {
-    id:1, title:"الغرفة المسكونة", theme:"theme-mansion",
-    ghost:{ name:"Spooky", personality:"خجول وسهل الانزعاج",
-      weaknessId:"mirror", weaknessName:"المراية", weaknessEmoji:"🪞",
-      reactions:{
-        candle:{text:"Spooky نفخ الشمعة! مش خايف من نار 😏",mood:"amused"},
-        box:{text:"Spooky بص على الصندوق... مفيش حاجة 😐",mood:"neutral"},
-        chair:{text:"Spooky: كرسي؟ بجد؟ 😒",mood:"annoyed"}
-      }
-    },
-    intro:"دخلتي غرفة مسكونة في بيت قديم... Spooky موجود جوه. جربي الحاجات واكتشفي بيخاف من إيه!",
-    objects:[
-      {id:"candle",emoji:"🕯️",name:"شمعة",x:10,y:28,collectable:true},
-      {id:"painting",emoji:"🖼️",name:"لوحة",x:52,y:6,collectable:false,interactText:"لوحة قديمة... عيونها بتبصلك 👁️"},
-      {id:"mirror",emoji:"🪞",name:"مراية",x:78,y:20,collectable:true},
-      {id:"box",emoji:"📦",name:"صندوق",x:32,y:62,collectable:true},
-      {id:"chair",emoji:"🪑",name:"كرسي",x:8,y:58,collectable:true},
-      {id:"door",emoji:"🚪",name:"باب",x:88,y:56,collectable:false,interactText:"الباب مقفول! لازم تطردّي الشبح 🔒"}
-    ],
-    discoveryText:"اكتشفتي نقطة ضعف Spooky! بيخاف من المرايات! 🪞",
-    successText:"Spooky هرب من المراية! الغرفة لكِ الآن!",
-    ghostStart:{x:48,y:28}, playerStart:{x:18,y:68}
-  },
-  {
-    id:2, title:"غرفة المعيشة", theme:"theme-living",
-    ghost:{ name:"Mr. Boo", personality:"بيحب يترعب... بس بيخاف من حاجة محدش يتوقعها",
-      weaknessId:"cat", weaknessName:"القطة", weaknessEmoji:"🐈",
-      reactions:{
-        toy:{text:"Mr. Boo رمى اللعبة! مش لاعب صغير 😐",mood:"amused"},
-        bell:{text:"Mr. Boo غطّ أذنه... بس مش خااف 😒",mood:"annoyed"},
-        piano:{text:"Mr. Boo: المزيكا دي مقرفة! 🙉",mood:"amused"},
-        catfood:{text:"ده أكل قطط... إنتي بتاكلين ده؟ 😂",mood:"amused"}
-      }
-    },
-    intro:"Mr. Boo شبح بيتصرف إنه جريء... بس عنده سر! في الغرفة قطة مستخبية—ممكن تكون المفتاح؟",
-    objects:[
-      {id:"cabinet",emoji:"🗄️",name:"دولاب",x:7,y:22,collectable:false,openable:true,contains:"catfood",interactText:"دولاب مقفول... ممكن نفتحه؟"},
-      {id:"catfood",emoji:"🍖",name:"أكل قطط",x:11,y:26,collectable:true,hidden:true},
-      {id:"bowl",emoji:"🥣",name:"طبق فاضي",x:40,y:66,collectable:false,interactText:"طبق فاضي... لو فيه أكل ممكن القطة تجي",needsItem:"catfood"},
-      {id:"toy",emoji:"🧸",name:"لعبة",x:66,y:52,collectable:true},
-      {id:"bell",emoji:"🔔",name:"جرس",x:84,y:22,collectable:true},
-      {id:"piano",emoji:"🎹",name:"بيانو",x:68,y:58,collectable:false,interactText:"بيانو قديم... النغمات مش ظابطة 🎵"},
-      {id:"cat",emoji:"🐈",name:"قطة",x:40,y:56,collectable:true,hidden:true},
-      {id:"door",emoji:"🚪",name:"باب",x:88,y:56,collectable:false,interactText:"الباب مقفول! 🔒"}
-    ],
-    discoveryText:"اكتشفتي نقطة ضعف Mr. Boo! بيخاف من القطط! 🐈",
-    successText:"Mr. Boo هرب من القطة! مفيش شبح هنا!",
-    ghostStart:{x:52,y:30}, playerStart:{x:22,y:68}
-  },
-  {
-    id:3, title:"صالة الجدات", theme:"theme-vintage",
-    ghost:{ name:"Grandma", personality:"شبحة جدّة... التكنولوجيا بتخوفها",
-      weaknessId:"camera", weaknessName:"الكاميرا", weaknessEmoji:"📸",
-      reactions:{
-        radio:{text:"Grandma: الراديو ده بيقول إيه؟! 😟",mood:"amused"},
-        phone:{text:"Grandma: التليفون ده مفيش بلاجة! 📞",mood:"amused"},
-        batteries:{text:"حاجة صغيرة كده... إيه دي؟",mood:"neutral"}
-      }
-    },
-    intro:"Grandma Ghost شبحة من زمان... التكنولوجيا ليها غريبة ومخوفة! دوري على حاجة تقنية",
-    objects:[
-      {id:"drawer",emoji:"🗄️",name:"درج",x:7,y:24,collectable:false,openable:true,contains:"batteries",interactText:"درج صغير..."},
-      {id:"batteries",emoji:"🔋",name:"بطاريات",x:11,y:28,collectable:true,hidden:true},
-      {id:"camera",emoji:"📸",name:"كاميرا",x:74,y:18,collectable:true,broken:true,brokenText:"الكاميرا مفيشهاش بطاريات! 🔋?"},
-      {id:"radio",emoji:"📻",name:"راديو",x:28,y:58,collectable:true},
-      {id:"phone",emoji:"📱",name:"موبايل",x:54,y:62,collectable:true},
-      {id:"doily",emoji:"🧶",name:"كروشيه",x:84,y:58,collectable:false,interactText:"كروشيه الجدّة... مفيش فايدة"},
-      {id:"door",emoji:"🚪",name:"باب",x:88,y:56,collectable:false,interactText:"الباب مقفول! 🔒"}
-    ],
-    discoveryText:"اكتشفتي نقطة ضعف Grandma! بتخاف من الكاميرا! 📸",
-    successText:"Grandma هربت من فلاش الكاميرا! 📸✨",
-    ghostStart:{x:42,y:30}, playerStart:{x:20,y:68}
-  },
-  {
-    id:4, title:"القبو المظلم", theme:"theme-basement",
-    ghost:{ name:"Whispy", personality:"شبح صغير بيحب الظلام ويخاف من النور",
-      weaknessId:"light", weaknessName:"الضوء", weaknessEmoji:"💡",
-      reactions:{
-        matches:{text:"Whispy: نار!... لأ معلش مش خااف 🔥😐",mood:"amused"},
-        wire:{text:"Whispy: سلك كهرباء... وإيه؟",mood:"neutral"}
-      }
-    },
-    intro:"Whispy شبح بيحب الظلام... القبو مظلم والكهرباء مقطوعة! وصّلي الكهرباء عشان تطردّيه!",
-    objects:[
-      {id:"switch_b",emoji:"🔌",name:"مفتاح كهرباء",x:48,y:8,collectable:false,interactText:"المفتاح مقطوع... لازم أسلاك!",needsItem:"wire"},
-      {id:"toolbox",emoji:"🔧",name:"علبة عدة",x:8,y:52,collectable:false,openable:true,contains:"wire",interactText:"علبة عدة..."},
-      {id:"wire",emoji:"🔌",name:"أسلاك",x:12,y:56,collectable:true,hidden:true},
-      {id:"matches",emoji:"🪵",name:"كبريت",x:78,y:52,collectable:true},
-      {id:"bulb1",emoji:"💡",name:"لمبة",x:22,y:4,collectable:false,interactText:"لمبة فاضية"},
-      {id:"bulb2",emoji:"💡",name:"لمبة",x:48,y:4,collectable:false,interactText:"لمبة فاضية"},
-      {id:"bulb3",emoji:"💡",name:"لمبة",x:74,y:4,collectable:false,interactText:"لمبة فاضية"},
-      {id:"door",emoji:"🚪",name:"باب",x:88,y:56,collectable:false,interactText:"الباب مقفول! 🔒"}
-    ],
-    discoveryText:"اكتشفتي نقطة ضعف Whispy! بيخاف من الضوء! 💡",
-    successText:"Whispy هرب من النور! القبو منور دلوقتي! 💡💡💡",
-    ghostStart:{x:48,y:38}, playerStart:{x:18,y:68}
-  },
-  {
-    id:5, title:"عرين الزعيم", theme:"theme-boss",
-    ghost:{ name:"Boss Ghost", personality:"بيقول إنه مش بيخاف من أي حاجة... بس عنده سر مضحك",
-      weaknessId:"potato", weaknessName:"البطاطس", weaknessEmoji:"🥔",
-      reactions:{
-        skull:{text:"Boss: جمجمة؟ أنا إشتريته! 💀😎",mood:"amused"},
-        knife:{text:"Boss: سكينة؟ إنتي بتقطعي إيه؟ 😏",mood:"amused"},
-        garlic:{text:"Boss: توم؟ أنا مش مصاص دماء 😂",mood:"amused"},
-        cross:{text:"Boss: أنا مش الشبح اللي بتفتكريه 😈",mood:"amused"},
-        mirror:{text:"Boss: المراية بتورّي وشّي الأصلي... قمر! 😎",mood:"amused"},
-        candle:{text:"Boss: شمعة؟ رومانسي! 🕯️😏",mood:"amused"},
-        bomb:{text:"Boss: قنبلة؟ هههه أنا شبح! 💥😂",mood:"amused"}
-      }
-    },
-    intro:"Boss Ghost أقوى شبح... بيقول إنه مش بيخاف من أي حاجة! بس كل واحد عنده نقطة ضعف...",
-    objects:[
-      {id:"skull",emoji:"💀",name:"جمجمة",x:10,y:22,collectable:true},
-      {id:"knife",emoji:"🔪",name:"سكينة",x:28,y:18,collectable:true},
-      {id:"garlic",emoji:"🧄",name:"توم",x:74,y:22,collectable:true},
-      {id:"cross",emoji:"✝️",name:"صليب",x:88,y:28,collectable:true},
-      {id:"mirror",emoji:"🪞",name:"مراية",x:54,y:52,collectable:true},
-      {id:"candle",emoji:"🕯️",name:"شمعة",x:14,y:58,collectable:true},
-      {id:"bomb",emoji:"💥",name:"قنبلة",x:38,y:62,collectable:true},
-      {id:"bag",emoji:"🛍️",name:"شورة",x:64,y:58,collectable:false,openable:true,contains:"potato",interactText:"شورة فيها حاجة..."},
-      {id:"potato",emoji:"🥔",name:"بطاطس",x:68,y:62,collectable:true,hidden:true},
-      {id:"door",emoji:"🚪",name:"باب",x:88,y:56,collectable:false,interactText:"الباب مقفول! 🔒"}
-    ],
-    discoveryText:"اكتشفتي نقطة ضعف Boss! بيخاف من البطاطس! 🥔😂",
-    successText:"Boss Ghost هرب من البطاطس! أقوى شبح بيخاف من بطاطس! 🥔😂",
-    ghostStart:{x:42,y:24}, playerStart:{x:18,y:68}
-  }
+/* ===== نافذة ===== */
+var WINS={tm:{x:55,y:4,w:14,h:22},tl:{x:60,y:4,w:16,h:20},tv:{x:45,y:4,w:14,h:22},tbs:{x:70,y:4,w:12,h:18},tbo:{x:50,y:4,w:14,h:20}};
+
+/* ===== مستويات ===== */
+var LV=[
+  {id:1,t:"الغرفة المسكونة",th:"tm",
+   g:{n:"Spooky",wid:"mirror",wn:"المراية",wi:"fa-right-left",wc:"#81d4fa",
+     r:{candle:{t:"Spooky نفخ الشمعة 😏",m:"amused"},box:{t:"صندوق فاضي 😐",m:"neutral"},chair:{t:"كرسي؟ 😒",m:"annoyed"}}},
+   o:[{id:"candle",x:42,y:46,col:1},{id:"painting",x:52,y:10,col:0,it:"لوحة عيونها بتبصلك..."},{id:"mirror",x:78,y:28,col:1},{id:"box",x:28,y:60,col:1},{id:"chair",x:10,y:56,col:1},{id:"door",x:88,y:54,col:0,it:"مقفول 🔒"}],
+   dt:"Spooky بيخاف من المرايات!",st:"Spooky هرب!",gs:{x:48,y:28},ps:{x:18,y:68}},
+
+  {id:2,t:"غرفة المعيشة",th:"tl",
+   g:{n:"Mr. Boo",wid:"cat",wn:"القطة",wi:"fa-cat",wc:"#ff9800",
+     r:{toy:{t:"رمى اللعبة 😐",m:"amused"},bell:{t:"غطّ أذنه 😒",m:"annoyed"},piano:{t:"مزيكا مقرفة 🙉",m:"amused"},catfood:{t:"أكل قطط؟ 😂",m:"amused"}}},
+   o:[{id:"cabinet",x:7,y:28,col:0,op:1,con:"catfood",it:"مقفول..."},{id:"catfood",x:11,y:32,col:1,hid:1},{id:"bowl",x:40,y:62,col:0,it:"طبق فاضي",ni:"catfood"},{id:"toy",x:66,y:52,col:1},{id:"bell",x:84,y:24,col:1},{id:"piano",x:68,y:56,col:0,it:"بيانو قديم"},{id:"cat",x:40,y:56,col:1,hid:1},{id:"door",x:88,y:54,col:0,it:"مقفول 🔒"}],
+   dt:"Mr. Boo بيخاف من القطط!",st:"Mr. Boo هرب!",gs:{x:52,y:30},ps:{x:22,y:68}},
+
+  {id:3,t:"صالة الجدات",th:"tv",
+   g:{n:"Grandma",wid:"camera",wn:"الكاميرا",wi:"fa-camera",wc:"#78909c",
+     r:{radio:{t:"الراديو إيه ده؟ 😟",m:"amused"},phone:{t:"التليفون ده؟",m:"amused"},batteries:{t:"حاجة صغيرة...",m:"neutral"}}},
+   o:[{id:"drawer",x:7,y:28,col:0,op:1,con:"batteries",it:"درج..."},{id:"batteries",x:11,y:32,col:1,hid:1},{id:"camera",x:74,y:22,col:1,brk:1,bt:"مفيش بطاريات!"},{id:"radio",x:28,y:56,col:1},{id:"phone",x:54,y:60,col:1},{id:"doily",x:84,y:56,col:0,it:"كروشيه..."},{id:"door",x:88,y:54,col:0,it:"مقفول 🔒"}],
+   dt:"Grandma بتخاف من الكاميرا!",st:"Grandma هربت!",gs:{x:42,y:30},ps:{x:20,y:68}},
+
+  {id:4,t:"القبو المظلم",th:"tbs",
+   g:{n:"Whispy",wid:"light",wn:"الضوء",wi:"fa-lightbulb",wc:"#ffeb3b",
+     r:{matches:{t:"نار! مش خااف 🔥",m:"amused"},wire:{t:"سلك؟ وإيه؟",m:"neutral"}}},
+   o:[{id:"switch_b",x:48,y:10,col:0,it:"مقطوع!",ni:"wire"},{id:"toolbox",x:8,y:52,col:0,op:1,con:"wire",it:"علبة عدة"},{id:"wire",x:12,y:56,col:1,hid:1},{id:"matches",x:78,y:52,col:1},{id:"bulb1",x:22,y:6,col:0,it:"فاضية"},{id:"bulb2",x:48,y:6,col:0,it:"فاضية"},{id:"bulb3",x:74,y:6,col:0,it:"فاضية"},{id:"door",x:88,y:54,col:0,it:"مقفول 🔒"}],
+   dt:"Whispy بيخاف من الضوء!",st:"Whispy هرب!",gs:{x:48,y:38},ps:{x:18,y:68}},
+
+  {id:5,t:"عرين الزعيم",th:"tbo",
+   g:{n:"Boss Ghost",wid:"potato",wn:"البطاطس",wi:"fa-apple-whole",wc:"#8d6e63",
+     r:{skull:{t:"جمجمة؟ شتريته! 💀",m:"amused"},knife:{t:"سكينة؟ 😏",m:"amused"},garlic:{t:"توم؟ مش مصاص دماء 😂",m:"amused"},cross:{t:"مش الشبح اللي بتفتكريه 😈",m:"amused"},mirror:{t:"المراية بتورّي قمري! 😎",m:"amused"},candle:{t:"شمعة؟ رومانسي! 😏",m:"amused"},bomb:{t:"قنبلة؟ أنا شبح! 💥😂",m:"amused"}}},
+   o:[{id:"skull",x:10,y:24,col:1},{id:"knife",x:28,y:20,col:1},{id:"garlic",x:74,y:24,col:1},{id:"cross",x:88,y:30,col:1},{id:"mirror",x:54,y:52,col:1},{id:"candle",x:14,y:58,col:1},{id:"bomb",x:38,y:62,col:1},{id:"bag",x:64,y:58,col:0,op:1,con:"potato",it:"فيها حاجة..."},{id:"potato",x:68,y:62,col:1,hid:1},{id:"door",x:88,y:54,col:0,it:"مقفول 🔒"}],
+   dt:"Boss بيخاف من البطاطس! 😂",st:"Boss هرب من البطاطس!",gs:{x:42,y:24},ps:{x:18,y:68}}
 ];
 
-/* =========================================
-   حالة اللعبة
-========================================= */
-let G = {
-  lvl:0, inv:[], sel:null, disc:false,
-  fear:0, mood:"neutral",
-  gPos:{x:50,y:30}, pPos:{x:20,y:70},
-  gone:false, rState:{}, gInt:null,
-  dlgTO:null, bulbs:0, camFixed:false
+/* ===== حالة ===== */
+var G={lv:0,inv:[],sel:null,disc:false,fear:0,mood:"neutral",gP:{x:50,y:30},pP:{x:20,y:70},gone:false,rS:{},gI:null,dTO:null,bulbs:0,camF:false,wI:null,trailI:null,lastGP:null};
+
+/* ===== صوت ===== */
+var S={ctx:null,mg:null,amb:false,ut:false,
+  i:function(){if(!this.ctx){this.ctx=new(window.AudioContext||window.webkitAudioContext)();this.mg=this.ctx.createGain();this.mg.gain.value=.35;this.mg.connect(this.ctx.destination)}},
+  tn:function(f,d,t,v,dl){t=t||"sine";v=v||.06;dl=dl||0;this.i();var n=this.ctx.currentTime+dl,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=t;o.frequency.value=f;g.gain.setValueAtTime(v,n);g.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(g);g.connect(this.mg);o.start(n);o.stop(n+d)},
+  nz:function(d,v,fq,q){v=v||.025;fq=fq||600;q=q||5;this.i();var n=this.ctx.sampleRate*d,b=this.ctx.createBuffer(1,n,this.ctx.sampleRate),dt=b.getChannelData(0);for(var i=0;i<n;i++)dt[i]=(Math.random()*2-1)*Math.sin(i/n*Math.PI*6)*(1-i/n);var s=this.ctx.createBufferSource();s.buffer=b;var f=this.ctx.createBiquadFilter();f.type="bandpass";f.frequency.value=fq;f.Q.value=q;var g=this.ctx.createGain();g.gain.value=v;s.connect(f);f.connect(g);g.connect(this.mg);s.start()},
+  sa:function(){if(this.amb)return;this.i();var o1=this.ctx.createOscillator(),g1=this.ctx.createGain();o1.type="sine";o1.frequency.value=42;g1.gain.value=.01;o1.connect(g1);g1.connect(this.mg);o1.start();var o2=this.ctx.createOscillator(),g2=this.ctx.createGain();o2.type="sine";o2.frequency.value=63;g2.gain.value=.004;o2.connect(g2);g2.connect(this.mg);o2.start();this.amb=true;var self=this;setInterval(function(){if(self.ut||Math.random()>.25)return;self.nz(.4,.01,300+Math.random()*600,8)},4500)},
+  pk:function(){this.tn(660,.07,"sine",.04);this.tn(880,.09,"sine",.03,.06)},
+  dc:function(){this.tn(520,.14,"triangle",.07);this.tn(660,.14,"triangle",.07,.1);this.tn(880,.14,"triangle",.07,.2);this.tn(1100,.18,"triangle",.05,.3)},
+  sc:function(){this.tn(180,.25,"sawtooth",.035);this.tn(120,.35,"sawtooth",.025);this.tn(1100,.08,"square",.01)},
+  wr:function(){this.tn(220,.18,"sine",.025);this.tn(160,.22,"sine",.02,.06)},
+  wn:function(){this.tn(523,.2,"triangle",.06);this.tn(659,.2,"triangle",.06,.12);this.tn(784,.2,"triangle",.06,.24);this.tn(1047,.25,"triangle",.05,.36)},
+  st:function(){this.nz(.05,.012,250,2)},
+  wo:function(){this.i();var n=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type="sine";o.frequency.setValueAtTime(240,n);o.frequency.linearRampToValueAtTime(150,n+.45);g.gain.setValueAtTime(.02,n);g.gain.linearRampToValueAtTime(0,n+.45);o.connect(g);g.connect(this.mg);o.start(n);o.stop(n+.45)}
 };
 
-/* =========================================
-   الصوت
-========================================= */
-let actx=null;
-function ia(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)()}
-function tone(f,d,t='sine',v=.12){
-  ia();const o=actx.createOscillator(),g=actx.createGain();
-  o.type=t;o.frequency.value=f;g.gain.value=v;
-  g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d);
-  o.connect(g);g.connect(actx.destination);o.start();o.stop(actx.currentTime+d);
-}
-function sfxPick(){tone(660,.08);setTimeout(()=>tone(880,.12),70)}
-function sfxDisc(){tone(520,.18,'triangle',.18);setTimeout(()=>tone(720,.18,'triangle',.18),140);setTimeout(()=>tone(1050,.25,'triangle',.18),280)}
-function sfxScare(){tone(180,.35,'sawtooth',.08);tone(130,.45,'sawtooth',.06)}
-function sfxWin(){[0,90,180,270,360].forEach((d,i)=>setTimeout(()=>tone(520+i*110,.18,'triangle',.14),d))}
-function sfxWrong(){tone(200,.25,'square',.04)}
-function sfxLaugh(){tone(320,.12,'sine',.08);setTimeout(()=>tone(260,.16,'sine',.06),100)}
+/* ===== شاشات ===== */
+function showScr(id){var all=document.querySelectorAll(".scr");for(var i=0;i<all.length;i++)all[i].classList.remove("on");document.getElementById(id).classList.add("on")}
 
-/* =========================================
-   إدارة الشاشات
-========================================= */
-function showScr(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-/* =========================================
-   جزيئات القائمة
-========================================= */
-(function(){
-  const c=document.getElementById('m-particles');
-  for(let i=0;i<25;i++){
-    const p=document.createElement('div');
-    p.className='m-particle';
-    p.style.left=Math.random()*100+'%';
-    p.style.top=(50+Math.random()*50)+'%';
-    p.style.animationDelay=Math.random()*7+'s';
-    p.style.animationDuration=(5+Math.random()*5)+'s';
-    c.appendChild(p);
-  }
-})();
-
-/* =========================================
-   بدء اللعبة
-========================================= */
-function startGame(){G.lvl=0;showIntro()}
+/* ===== بدء ===== */
+function startGame(){G.lv=0;S.i();S.sa();showIntro()}
 
 function showIntro(){
-  const l=LEVELS[G.lvl],box=document.getElementById('intro-box');
-  box.innerHTML=`
-    <div class="intro-lvl">LEVEL ${l.id}</div>
-    <div class="intro-emoji">${l.ghost.weaknessEmoji}</div>
-    <div class="intro-name">${l.ghost.name}</div>
-    <div class="intro-pers">"${l.ghost.personality}"</div>
-    <div class="intro-desc">${l.intro}</div>
-    <button class="btn btn-primary" onclick="beginLvl()"><i class="fas fa-door-open"></i>&nbsp; ادخلي الغرفة</button>
-  `;
-  showScr('intro-screen');
+  var l=LV[G.lv],b=document.getElementById("ibx");
+  b.innerHTML='<div class="ilv">LEVEL '+l.id+'</div><div class="gwrap"><div class="gchar-lg"><div class="ghead-lg"><div class="geye-lg l"><div class="gpup-lg"></div></div><div class="geye-lg r"><div class="gpup-lg"></div></div><div class="gmou-lg"></div></div><div class="gtail-lg"></div></div></div><div class="inm">'+l.g.n+'</div><div style="color:var(--mt);font-size:13px;margin-bottom:8px">'+l.t+'</div><button class="btn bp" id="enterBtn" style="margin-top:18px"><i class="fas fa-door-open"></i>&nbsp; ادخلي</button>';
+  showScr("intro");
+  document.getElementById("enterBtn").addEventListener("click",beginLvl);
 }
 
-/* =========================================
-   بدء المستوى
-========================================= */
 function beginLvl(){
-  const l=LEVELS[G.lvl];
-  G.inv=[];G.sel=null;G.disc=false;G.fear=0;G.mood='neutral';
-  G.gPos={...l.ghostStart};G.pPos={...l.playerStart};
-  G.gone=false;G.rState={};G.bulbs=0;G.camFixed=false;
-  showScr('game-screen');
-  renderRoom();
-  startAI();
+  var l=LV[G.lv];
+  G.inv=[];G.sel=null;G.disc=false;G.fear=0;G.mood="neutral";
+  G.gP={x:l.gs.x,y:l.gs.y};G.pP={x:l.ps.x,y:l.ps.y};
+  G.gone=false;G.rS={};G.bulbs=0;G.camF=false;G.lastGP={x:l.gs.x,y:l.gs.y};
+  showScr("game");renderR();startAI();startWhisp();startTrail();
 }
 
-/* =========================================
-   رسم الغرفة
-========================================= */
-function renderRoom(){
-  const l=LEVELS[G.lvl],room=document.getElementById('room');
+/* ===== رسم غرفة ===== */
+function renderR(){
+  var l=LV[G.lv],rm=document.getElementById("room");
+  document.getElementById("hl").textContent="Level "+l.id;
+  document.getElementById("hg").textContent=l.g.n;
+  updF();
+  rm.className="room "+l.th;
+  rm.innerHTML='<div class="rw"><div class="rw-texture"></div></div><div class="rf"><div class="rfl"></div><div class="rf-wood"></div></div><div class="rv"></div><div class="rfg"></div><div class="rdst" id="rdst"></div>';
 
-  // HUD
-  document.getElementById('hud-lvl').textContent=`Level ${l.id}: ${l.title}`;
-  document.getElementById('hud-ghost').textContent=l.ghost.name;
-  updFear();
+  /* غبار */
+  var dc=document.getElementById("rdst");
+  for(var i=0;i<12;i++){var d=document.createElement("div");d.className="dst";d.style.left=Math.random()*100+"%";d.style.top=Math.random()*100+"%";d.style.animationDelay=Math.random()*10+"s";d.style.animationDuration=(7+Math.random()*7)+"s";dc.appendChild(d)}
 
-  // الغرفة
-  room.className=`room ${l.theme}`;
-  room.innerHTML=`
-    <div class="r-wall"></div>
-    <div class="r-floor"><div class="r-floor-line"></div><div class="r-floor-boards"></div></div>
-    <div class="r-vignette"></div>
-    <div class="r-fog"></div>
-    <div class="r-dust" id="r-dust"></div>
-  `;
-
-  // جزيئات تراب
-  const dustC=document.getElementById('r-dust');
-  for(let i=0;i<12;i++){
-    const d=document.createElement('div');
-    d.className='dust';
-    d.style.left=Math.random()*100+'%';
-    d.style.top=Math.random()*100+'%';
-    d.style.animationDelay=Math.random()*8+'s';
-    d.style.animationDuration=(6+Math.random()*6)+'s';
-    dustC.appendChild(d);
+  /* أثاث */
+  var furns=FURN[l.th]||[];
+  for(var fi=0;fi<furns.length;fi++){
+    var f=furns[fi],fe=document.createElement("div");fe.className="furn";
+    fe.style.left=f.x+"%";fe.style.top=f.y+"%";fe.style.width=f.w+"%";fe.style.height=f.h+"%";
+    fe.style.cssText+=(";"+f.css);
+    /* ظل */
+    var fsh=document.createElement("div");fsh.className="furn-shadow";
+    fe.appendChild(fsh);
+    rm.appendChild(fe);
   }
 
-  // أجسام
-  l.objects.forEach(obj=>{
-    const el=document.createElement('div');
-    el.className='r-obj';
-    if(obj.hidden)el.classList.add('hidden-obj');
-    el.id='o-'+obj.id;
-    el.style.left=obj.x+'%';el.style.top=obj.y+'%';
-    el.innerHTML=`<div class="r-obj-inner"><span class="r-obj-emoji">${obj.emoji}</span><span class="r-obj-label">${obj.name}</span></div>`;
-    el.addEventListener('click',e=>{e.stopPropagation();clickObj(obj)});
-    room.appendChild(el);
-  });
-
-  // الشبح
-  const gh=document.createElement('div');
-  gh.className='ghost-entity';gh.id='gh';
-  gh.style.left=G.gPos.x+'%';gh.style.top=G.gPos.y+'%';
-  gh.innerHTML=`
-    <div class="ghost-vis">
-      <div class="g-head">
-        <div class="g-eye l"><div class="g-pupil"></div></div>
-        <div class="g-eye r"><div class="g-pupil"></div></div>
-        <div class="g-mouth"></div>
-      </div>
-      <div class="g-tail"></div>
-    </div>
-    <div class="g-shadow"></div>
-  `;
-  gh.addEventListener('click',e=>{e.stopPropagation();clickGhost()});
-  room.appendChild(gh);
-
-  // اللاعبة
-  const pl=document.createElement('div');
-  pl.className='player-char';pl.id='pl';
-  pl.style.left=G.pPos.x+'%';pl.style.top=G.pPos.y+'%';
-  pl.textContent='👩';
-  room.appendChild(pl);
-
-  renderInv();
-  updHint();
-}
-
-function updFear(){
-  document.getElementById('fear-fill').style.width=G.fear+'%';
-  document.getElementById('fear-pct').textContent=G.fear+'%';
-}
-
-/* =========================================
-   الإنفنتوري
-========================================= */
-function renderInv(){
-  const bar=document.getElementById('inv-bar');
-  bar.innerHTML='<span class="inv-label"><i class="fas fa-briefcase"></i></span>';
-  if(!G.inv.length){bar.innerHTML+='<span class="inv-empty">فاضي</span>';return}
-  G.inv.forEach(it=>{
-    const s=document.createElement('div');
-    s.className='inv-slot';
-    if(G.sel===it.id)s.classList.add('sel');
-    s.innerHTML=`${it.emoji}<span class="inv-slot-name">${it.name}</span>`;
-    s.addEventListener('click',()=>{G.sel=G.sel===it.id?null:it.id;renderInv();updHint()});
-    bar.appendChild(s);
-  });
-}
-
-function updHint(){
-  const h=document.getElementById('hint');
-  if(G.gone){h.textContent='الشبح هرب! 🎉';return}
-  if(G.sel){const it=G.inv.find(i=>i.id===G.sel);h.textContent=`اختارتي ${it.emoji} ${it.name} — اضغطي على الشبح أو حاجة`;return}
-  if(G.disc){const l=LEVELS[G.lvl];h.textContent=`استخدمي ${l.ghost.weaknessEmoji} على الشبح تاني!`;return}
-  h.textContent='التقطي حاجات وجربيها على الشبح!';
-}
-
-/* =========================================
-   حركة اللاعبة
-========================================= */
-function moveP(x,y,cb){
-  const pl=document.getElementById('pl');if(!pl)return;
-  G.pPos={x,y};pl.style.left=x+'%';pl.style.top=y+'%';
-  if(cb)setTimeout(cb,550);
-}
-
-/* =========================================
-   النقر على جسم
-========================================= */
-function clickObj(obj){
-  const l=LEVELS[G.lvl];
-
-  // جسم مخفي
-  if(obj.hidden){
-    const el=document.getElementById('o-'+obj.id);
-    if(!el||!el.classList.contains('revealed'))return;
+  /* نافذة */
+  var win=WINS[l.th];
+  if(win){
+    var wf=document.createElement("div");wf.className="window-frame";
+    wf.style.left=win.x+"%";wf.style.top=win.y+"%";wf.style.width=win.w+"%";wf.style.height=win.h+"%";
+    wf.innerHTML='<div class="window-glass"><div class="window-cross-v"></div><div class="window-cross-h"></div></div>';
+    rm.appendChild(wf);
+    /* ضوء قمر */
+    var ml=document.createElement("div");ml.className="moonlight";
+    ml.style.left=(win.x-5)+"%";ml.style.top=win.y+"%";
+    ml.style.width=(win.w+30)+"%";ml.style.height=(win.h+40)+"%";
+    rm.appendChild(ml);
   }
 
-  // حاجة مختارة - استخدام على جسم
-  if(G.sel){useOnObj(obj);return}
+  /* شبكة عنكبوت - زاوية */
+  var cw=document.createElement("div");cw.className="cobweb";
+  cw.style.right="0";cw.style.top="0";cw.style.width="60px";cw.style.height="60px";
+  cw.innerHTML='<svg viewBox="0 0 60 60" fill="none" stroke="rgba(200,204,224,.5)" stroke-width=".5"><line x1="60" y1="0" x2="30" y2="10"/><line x1="60" y1="0" x2="20" y2="20"/><line x1="60" y1="0" x2="10" y2="30"/><line x1="60" y1="0" x2="0" y2="40"/><path d="M40 5 Q35 12 30 10 Q25 15 20 20 Q15 25 10 30 Q5 35 0 40"/></svg>';
+  rm.appendChild(cw);
 
-  moveP(obj.x,Math.min(obj.y+14,82),()=>{
+  /* ضوء شمعة (لو في شمعة في الغرفة) */
+  var hasCandle=false;
+  for(var ci=0;ci<l.o.length;ci++){if(l.o[ci].id==="candle"&&!l.o[ci].hid){hasCandle=true;break}}
+  if(hasCandle){
+    var cg=document.createElement("div");cg.className="candle-glow";cg.id="candleGlow";
+    /* هنحركها مع الشمعة */
+    for(var ci2=0;ci2<l.o.length;ci2++){if(l.o[ci2].id==="candle"){cg.style.left=(l.o[ci2].x-2)+"%";cg.style.top=(l.o[ci2].y-5)+"%";break}}
+    rm.appendChild(cg);
+  }
 
-    // فتح دولاب/درج
-    if(obj.openable&&obj.contains&&!G.rState[obj.id+'_open']){
-      G.rState[obj.id+'_open']=true;
-      const hidden=l.objects.find(o=>o.id===obj.contains);
-      if(hidden){
-        reveal(hidden);
-        toast(`فتحتي ${obj.name}! لقتي ${hidden.emoji} ${hidden.name}!`,'ok');
-        sfxPick();
-      }
-      return;
+  /* أجسام تفاعلية */
+  for(var j=0;j<l.o.length;j++){
+    var o=l.o[j],ic=IC[o.id]||{i:"fa-circle",c:"#888",b:"rgba(136,136,136,.08)"};
+    var e=document.createElement("div");e.className="ro";
+    if(o.hid)e.classList.add("hid");
+    e.id="o-"+o.id;e.style.left=o.x+"%";e.style.top=o.y+"%";
+    var lb=NM[o.id]||"";
+    e.innerHTML='<div class="oic" style="background:'+ic.b+";color:"+ic.c+'"><i class="fa-solid '+ic.i+'"></i></div><span class="olb">'+lb+"</span>";
+    (function(obj){e.addEventListener("click",function(ev){ev.stopPropagation();clickO(obj)})})(o);
+    rm.appendChild(e);
+  }
+
+  /* شبح */
+  var gh=document.createElement("div");gh.className="ge";gh.id="gh";
+  gh.style.left=G.gP.x+"%";gh.style.top=G.gP.y+"%";
+  gh.innerHTML='<div class="gchar-lg"><div class="ghead-lg"><div class="geye-lg l"><div class="gpup-lg"></div></div><div class="geye-lg r"><div class="gpup-lg"></div></div><div class="gmou-lg"></div></div><div class="gtail-lg"></div></div><div class="gsh"></div>';
+  gh.addEventListener("click",function(ev){ev.stopPropagation();clickG()});
+  rm.appendChild(gh);
+
+  /* لاعب */
+  var pl=document.createElement("div");pl.className="pl";pl.id="pl";
+  pl.style.left=G.pP.x+"%";pl.style.top=G.pP.y+"%";
+  pl.innerHTML='<i class="fa-solid fa-person-dress"></i>';
+  rm.appendChild(pl);
+
+  renderI();
+}
+
+function updF(){document.getElementById("ffl").style.width=G.fear+"%";document.getElementById("fpc").textContent=G.fear+"%"}
+
+function renderI(){
+  var b=document.getElementById("inv");
+  b.innerHTML='<span class="invl"><i class="fas fa-briefcase"></i></span>';
+  if(!G.inv.length){b.innerHTML+='<span class="ie">فاضي</span>';return}
+  for(var i=0;i<G.inv.length;i++){
+    var it=G.inv[i],ic=IC[it.id]||{i:"fa-circle",c:"#888",b:"rgba(136,136,136,.08)"};
+    var s=document.createElement("div");s.className="islt";
+    if(G.sel===it.id)s.classList.add("sel");
+    s.style.background=ic.b;s.style.color=ic.c;
+    s.innerHTML='<i class="fa-solid '+ic.i+'"></i><span class="isn">'+it.nm+"</span>";
+    (function(item){s.addEventListener("click",function(){G.sel=G.sel===item.id?null:item.id;renderI()})})(it);
+    b.appendChild(s);
+  }
+}
+
+function moveP(x,y,cb){var pl=document.getElementById("pl");if(!pl)return;G.pP={x:x,y:y};pl.style.left=x+"%";pl.style.top=y+"%";S.st();if(cb)setTimeout(cb,550)}
+
+/* ===== أثر الشبح ===== */
+function startTrail(){
+  stopTrail();
+  G.trailI=setInterval(function(){
+    if(G.gone)return;
+    if(!G.lastGP||Math.abs(G.lastGP.x-G.gP.x)<1&&Math.abs(G.lastGP.y-G.gP.y)<1)return;
+    G.lastGP={x:G.gP.x,y:G.gP.y};
+    var rm=document.getElementById("room");if(!rm)return;
+    var t=document.createElement("div");t.className="gtrail";
+    t.style.left=(G.gP.x+2)+"%";t.style.top=(G.gP.y+5)+"%";
+    t.style.width="20px";t.style.height="20px";
+    rm.appendChild(t);setTimeout(function(){t.remove()},1200);
+  },300);
+}
+function stopTrail(){if(G.trailI){clearInterval(G.trailI);G.trailI=null}}
+
+/* ===== نقر جسم ===== */
+function clickO(o){
+  var l=LV[G.lv];
+  if(o.hid){var e=document.getElementById("o-"+o.id);if(!e||!e.classList.contains("rev"))return}
+  if(G.sel){useOnO(o);return}
+  moveP(o.x,Math.min(o.y+14,82),function(){
+    if(o.op&&o.con&&!G.rS[o.id+"_o"]){
+      G.rS[o.id+"_o"]=true;var h=null;
+      for(var k=0;k<l.o.length;k++){if(l.o[k].id===o.con){h=l.o[k];break}}
+      if(h){reveal(h);toast("لقتي حاجة!","ok");S.pk()}return;
     }
-
-    // التقط
-    if(obj.collectable){
-      if(obj.broken&&!G.camFixed){toast(obj.brokenText,'err');return}
-      collect(obj);return;
-    }
-
-    // يحتاج حاجة
-    if(obj.needsItem){toast(`${obj.name} — محتاج حاجة...`,'err');return}
-
-    // تفاعل
-    if(obj.interactText)showDlg(obj.interactText);
+    if(o.col){if(o.brk&&!G.camF){toast(o.bt,"err");rattle(o.id);return}collect(o);return}
+    if(o.ni){rattle(o.id);return}
+    if(o.it){showDlg(o.it)}
   });
 }
 
-function collect(obj){
-  G.inv.push({id:obj.id,emoji:obj.emoji,name:obj.name});
-  const el=document.getElementById('o-'+obj.id);
-  if(el)el.classList.add('collected');
-  sfxPick();toast(`التقطتي ${obj.emoji} ${obj.name}`,'ok');
+function collect(o){var nm=NM[o.id]||o.id;G.inv.push({id:o.id,nm:nm});var e=document.getElementById("o-"+o.id);if(e)e.classList.add("col");S.pk();renderI()}
+function reveal(o){var e=document.getElementById("o-"+o.id);if(e){e.classList.remove("hid");e.classList.add("rev")}}
+function rattle(id){var e=document.getElementById("o-"+id);if(e){e.classList.add("rattle");setTimeout(function(){e.classList.remove("rattle")},400)}}
 
-  // تأثير الالتقاط
-  const room=document.getElementById('room');
-  const fx=document.createElement('div');
-  fx.className='pickup-fx';fx.textContent='+'+obj.emoji;
-  fx.style.left=obj.x+'%';fx.style.top=(obj.y-5)+'%';
-  room.appendChild(fx);setTimeout(()=>fx.remove(),600);
-
-  renderInv();updHint();
-}
-
-function reveal(obj){
-  const el=document.getElementById('o-'+obj.id);
-  if(el){el.classList.remove('hidden-obj');el.classList.add('revealed')}
-}
-
-/* =========================================
-   النقر على الشبح
-========================================= */
-function clickGhost(){
+/* ===== نقر شبح ===== */
+function clickG(){
   if(G.gone)return;
-  if(!G.sel){
-    const l=LEVELS[G.lvl];
-    showDlg(`${l.ghost.name}: هههه ممعاكش حاجة! 😈`);
-    sfxLaugh();
-    const nx=Math.min(88,Math.max(10,G.gPos.x+(Math.random()-.5)*20));
-    const ny=Math.min(68,Math.max(10,G.gPos.y+(Math.random()-.5)*15));
-    moveG(nx,ny);
-    return;
-  }
-  useOnGhost();
+  if(!G.sel){var l=LV[G.lv];showDlg(l.g.n+": هههه 😈");S.wo();var nx=Math.min(88,Math.max(10,G.gP.x+(Math.random()-.5)*20));var ny=Math.min(68,Math.max(10,G.gP.y+(Math.random()-.5)*15));moveG(nx,ny);return}
+  useOnG();
 }
 
-/* =========================================
-   استخدام على الشبح
-========================================= */
-function useOnGhost(){
-  const l=LEVELS[G.lvl],it=G.inv.find(i=>i.id===G.sel);
+function useOnG(){
+  var l=LV[G.lv],it=null;
+  for(var i=0;i<G.inv.length;i++){if(G.inv[i].id===G.sel){it=G.inv[i];break}}
   if(!it)return;
-
-  moveP(
-    Math.min(88,Math.max(10,G.gPos.x+(Math.random()>.5?14:-14))),
-    Math.min(82,G.gPos.y+10),
-    ()=>{
-      if(G.sel===l.ghost.weaknessId)useWeak(it);
-      else useWrong(it,l);
-      G.sel=null;renderInv();updHint();
-    }
-  );
-}
-
-function useWeak(it){
-  const l=LEVELS[G.lvl];
-  G.fear=Math.min(100,G.fear+35);updFear();
-
-  if(!G.disc){
-    G.disc=true;sfxDisc();
-    const room=document.getElementById('room');
-    const fl=document.createElement('div');fl.className='fx-flash';room.appendChild(fl);setTimeout(()=>fl.remove(),500);
-    toast(`اكتشاف! ${l.ghost.weaknessEmoji} نقطة ضعف ${l.ghost.name}: ${l.ghost.weaknessName}!`,'disc');
-    setMood('scared');
-    showDlg(`${l.ghost.name}: لا لا لا! مش ده! 😱`);
-    moveGAway();
-  } else {
-    sfxScare();
-    if(G.fear>=100){ghostFled();return}
-    setMood('scared');
-    const r=[`${l.ghost.name}: تاني?! 😨`,`${l.ghost.name}: بكفش! أوف! 😱`,`${l.ghost.name}: ههرب! 🏃‍♂️`];
-    showDlg(r[Math.min(2,Math.floor(G.fear/35))]);
-    moveGAway();
-
-    // اهتزاز الشاشة
-    const rw=document.getElementById('room-wrap');
-    rw.classList.add('screen-shake');setTimeout(()=>rw.classList.remove('screen-shake'),300);
-  }
-}
-
-function useWrong(it,l){
-  sfxWrong();
-  const rx=l.ghost.reactions[it.id]||{text:`${l.ghost.name}: إيه ده? مش خايف! 😐`,mood:'neutral'};
-  showDlg(rx.text);setMood(rx.mood||'neutral');
-  setTimeout(()=>{if(!G.disc)setMood('neutral');else if(G.fear>30)setMood('scared')},2200);
-  const nx=Math.min(88,Math.max(10,G.gPos.x+(Math.random()-.5)*28));
-  const ny=Math.min(68,Math.max(10,G.gPos.y+(Math.random()-.5)*18));
-  moveG(nx,ny);
-}
-
-/* =========================================
-   استخدام على جسم
-========================================= */
-function useOnObj(obj){
-  const l=LEVELS[G.lvl],it=G.inv.find(i=>i.id===G.sel);
-  if(!it)return;
-
-  // ليفيل 2: أكل+طبق
-  if(l.id===2&&G.sel==='catfood'&&obj.id==='bowl'){
-    G.sel=null;G.inv=G.inv.filter(i=>i.id!=='catfood');
-    reveal(l.objects.find(o=>o.id==='cat'));
-    toast('حطيتي الأكل في الطبق! القطة طلعت! 🐈','ok');sfxPick();
-    renderInv();updHint();moveP(obj.x,Math.min(obj.y+14,82));return;
-  }
-
-  // ليفيل 3: بطاريات+كاميرا
-  if(l.id===3&&G.sel==='batteries'&&obj.id==='camera'){
-    G.sel=null;G.inv=G.inv.filter(i=>i.id!=='batteries');G.camFixed=true;
-    const cam=l.objects.find(o=>o.id==='camera');cam.broken=false;
-    collect(cam);toast('حطيتي البطاريات في الكاميرا! 📸✨','ok');sfxDisc();
-    renderInv();updHint();moveP(obj.x,Math.min(obj.y+14,82));return;
-  }
-
-  // ليفيل 4: أسلاك+مفتاح
-  if(l.id===4&&G.sel==='wire'&&obj.id==='switch_b'){
-    G.sel=null;G.inv=G.inv.filter(i=>i.id!=='wire');G.rState['power']=true;
-    toast('وصّلتي الأسلاك! الكهرباء رجعت! ⚡','ok');sfxDisc();
-    lightBulbs();renderInv();updHint();moveP(obj.x,Math.min(obj.y+14,82));return;
-  }
-
-  // عام: الجسم يحتاج الحاجة
-  if(obj.needsItem===G.sel){
-    G.sel=null;G.inv=G.inv.filter(i=>i.id!==obj.needsItem);
-    toast(`استخدمتي ${it.emoji} على ${obj.name}!`,'ok');sfxPick();
-    if(l.id===2&&obj.id==='bowl')reveal(l.objects.find(o=>o.id==='cat'));
-    renderInv();updHint();moveP(obj.x,Math.min(obj.y+14,82));return;
-  }
-
-  showDlg(`ممكن تستخدمي ${it.emoji} على ${obj.name}... مش هينفع! 🤔`);
-  sfxWrong();G.sel=null;renderInv();updHint();
-}
-
-/* =========================================
-   تنوير اللمبات
-========================================= */
-function lightBulbs(){
-  const ids=['bulb1','bulb2','bulb3'];
-  const room=document.getElementById('room');
-
-  ids.forEach((id,i)=>{
-    setTimeout(()=>{
-      const el=document.getElementById('o-'+id);
-      if(el){
-        const em=el.querySelector('.r-obj-emoji');
-        if(em){em.style.filter='drop-shadow(0 0 18px rgba(255,235,59,.8))';em.style.fontSize='38px'}
-        el.classList.add('light-on');
-
-        // تأثير توهج
-        const glow=document.createElement('div');
-        glow.className='bulb-glow';
-        glow.style.left=(parseFloat(el.style.left)-2)+'%';
-        glow.style.top=(parseFloat(el.style.top)-8)+'%';
-        room.appendChild(glow);
-      }
-      G.bulbs=i+1;
-
-      if(i===2){
-        setTimeout(()=>{
-          if(!G.inv.find(it=>it.id==='light')){
-            G.inv.push({id:'light',emoji:'💡',name:'ضوء'});
-            renderInv();
-          }
-          G.disc=true;G.fear=Math.min(100,G.fear+35);updFear();
-          toast('اكتشاف! Whispy بيخاف من الضوء! 💡','disc');sfxDisc();
-          setMood('scared');
-          const fl=document.createElement('div');fl.className='fx-flash';room.appendChild(fl);setTimeout(()=>fl.remove(),500);
-          showDlg('Whispy: النور! النور! أوف! 😨💡');moveGAway();
-        },500);
-      }
-    },i*600);
+  moveP(Math.min(88,Math.max(10,G.gP.x+(Math.random()>.5?14:-14))),Math.min(82,G.gP.y+10),function(){
+    if(G.sel===l.g.wid)useW(it);else useWr(it,l);
+    G.sel=null;renderI();
   });
 }
 
-/* =========================================
-   هروب الشبح
-========================================= */
+function useW(it){
+  var l=LV[G.lv];G.fear=Math.min(100,G.fear+35);updF();dropEcto();
+  if(!G.disc){
+    G.disc=true;S.dc();
+    var rm=document.getElementById("room"),fl=document.createElement("div");fl.className="fxfl";rm.appendChild(fl);setTimeout(function(){fl.remove()},600);
+    var ring=document.createElement("div");ring.className="dring";ring.style.left=G.gP.x+"%";ring.style.top=G.gP.y+"%";rm.appendChild(ring);setTimeout(function(){ring.remove()},1100);
+    toast(l.g.dt,"disc");setM("scared");showDlg(l.g.n+": لا لا لا! 😱");moveGA();
+  }else{
+    S.sc();if(G.fear>=100){ghostFled();return}
+    setM("scared");
+    var r=[l.g.n+": تاني?! 😨",l.g.n+": أوف! 😱",l.g.n+": ههرب! 🏃"];
+    showDlg(r[Math.min(2,Math.floor(G.fear/35))]);moveGA();
+    var rw=document.getElementById("rwr");rw.classList.add("sshk");setTimeout(function(){rw.classList.remove("sshk")},350);
+  }
+}
+
+function useWr(it,l){
+  S.wr();var rx=l.g.r[it.id]||{t:l.g.n+": إيه ده? 😐",m:"neutral"};
+  showDlg(rx.t);setM(rx.m||"neutral");
+  setTimeout(function(){if(!G.disc)setM("neutral");else if(G.fear>30)setM("scared")},2200);
+  moveG(Math.min(88,Math.max(10,G.gP.x+(Math.random()-.5)*28)),Math.min(68,Math.max(10,G.gP.y+(Math.random()-.5)*18)));
+}
+
+/* ===== استخدام على جسم ===== */
+function useOnO(o){
+  var l=LV[G.lv],it=null;
+  for(var i=0;i<G.inv.length;i++){if(G.inv[i].id===G.sel){it=G.inv[i];break}}
+  if(!it)return;
+  if(l.id===2&&G.sel==="catfood"&&o.id==="bowl"){
+    G.sel=null;G.inv=G.inv.filter(function(x){return x.id!=="catfood"});
+    var catObj=null;for(var k=0;k<l.o.length;k++){if(l.o[k].id==="cat"){catObj=l.o[k];break}}
+    if(catObj)reveal(catObj);toast("القطة طلعت!","ok");S.pk();renderI();moveP(o.x,Math.min(o.y+14,82));return;
+  }
+  if(l.id===3&&G.sel==="batteries"&&o.id==="camera"){
+    G.sel=null;G.inv=G.inv.filter(function(x){return x.id!=="batteries"});G.camF=true;
+    var camObj=null;for(var k2=0;k2<l.o.length;k2++){if(l.o[k2].id==="camera"){camObj=l.o[k2];break}}
+    if(camObj){camObj.brk=0}collect(camObj);toast("الكاميرا اشتغلت!","ok");S.dc();renderI();moveP(o.x,Math.min(o.y+14,82));return;
+  }
+  if(l.id===4&&G.sel==="wire"&&o.id==="switch_b"){
+    G.sel=null;G.inv=G.inv.filter(function(x){return x.id!=="wire"});G.rS["pwr"]=true;
+    toast("الكهرباء رجعت!","ok");S.dc();lightB();renderI();moveP(o.x,Math.min(o.y+14,82));return;
+  }
+  if(o.ni===G.sel){
+    G.sel=null;G.inv=G.inv.filter(function(x){return x.id!==o.ni});
+    toast("استخدمتيها!","ok");S.pk();
+    if(l.id===2&&o.id==="bowl"){var co=null;for(var k3=0;k3<l.o.length;k3++){if(l.o[k3].id==="cat"){co=l.o[k3];break}}if(co)reveal(co)}
+    renderI();moveP(o.x,Math.min(o.y+14,82));return;
+  }
+  showDlg("مش هينفع 🤔");S.wr();rattle(o.id);G.sel=null;renderI();
+}
+
+/* ===== لمبات ===== */
+function lightB(){
+  var ids=["bulb1","bulb2","bulb3"],rm=document.getElementById("room");
+  for(var idx=0;idx<ids.length;idx++){
+    (function(i){
+      setTimeout(function(){
+        var e=document.getElementById("o-"+ids[i]);
+        if(e){var ic=e.querySelector(".oic");if(ic){ic.style.background="rgba(255,235,59,.15)";ic.style.color="#ffeb3b";ic.style.boxShadow="0 0 20px rgba(255,235,59,.35)"}var gl=document.createElement("div");gl.className="bglw";gl.style.left=(parseFloat(e.style.left)-1)+"%";gl.style.top=(parseFloat(e.style.top)-5)+"%";rm.appendChild(gl)}
+        G.bulbs=i+1;
+        if(i===2){
+          setTimeout(function(){
+            var hasLight=false;for(var j=0;j<G.inv.length;j++){if(G.inv[j].id==="light"){hasLight=true;break}}
+            if(!hasLight){G.inv.push({id:"light",nm:"ضوء"});renderI()}
+            G.disc=true;G.fear=Math.min(100,G.fear+35);updF();
+            toast("Whispy بيخاف من الضوء!","disc");S.dc();setM("scared");
+            var fl=document.createElement("div");fl.className="fxfl";rm.appendChild(fl);setTimeout(function(){fl.remove()},600);
+            showDlg("النور! أوف! 😨");moveGA();
+          },500);
+        }
+      },i*500);
+    })(idx);
+  }
+}
+
+/* ===== إكتوبلازم ===== */
+function dropEcto(){
+  var rm=document.getElementById("room");
+  for(var i=0;i<5;i++){
+    var e=document.createElement("div");e.className="ecto";
+    e.style.left=(G.gP.x+Math.random()*12-6)+"%";
+    e.style.top=(G.gP.y+Math.random()*10-2)+"%";
+    e.style.animationDelay=(i*.12)+"s";
+    rm.appendChild(e);(function(el){setTimeout(function(){el.remove()},1600)})(e);
+  }
+}
+
+/* ===== همسات ===== */
+var WHISPS=["...boo","هههه","go away","...","مفيش حاجة تخوف","اتريكي","...cold...","لا تقربي"];
+function startWhisp(){
+  if(G.wI)return;
+  G.wI=setInterval(function(){
+    if(G.gone||G.mood==="fleeing")return;
+    var rm=document.getElementById("room");if(!rm)return;
+    var w=document.createElement("div");w.className="gwhisp";
+    w.textContent=WHISPS[Math.floor(Math.random()*WHISPS.length)];
+    w.style.left=(G.gP.x+6)+"%";w.style.top=(G.gP.y-10)+"%";
+    rm.appendChild(w);setTimeout(function(){w.remove()},2800);
+  },3800);
+}
+
+/* ===== هروب ===== */
 function ghostFled(){
-  const l=LEVELS[G.lvl];G.gone=true;
-  setMood('fleeing');sfxWin();
-  moveG(90,58);
-  setTimeout(()=>{const g=document.getElementById('gh');if(g)g.classList.add('gone')},700);
-
-  const room=document.getElementById('room');
-  const fx=document.createElement('div');fx.className='fx-win';room.appendChild(fx);setTimeout(()=>fx.remove(),1000);
-  toast(l.successText,'ok');
-
-  const d=document.getElementById('o-door');
-  if(d)d.querySelector('.r-obj-emoji').style.filter='drop-shadow(0 0 12px rgba(0,230,118,.5))';
-
-  setTimeout(()=>showLC(),2400);
+  var l=LV[G.lv];G.gone=true;setM("fleeing");S.wn();moveG(92,58);
+  setTimeout(function(){var g=document.getElementById("gh");if(g)g.classList.add("gone")},500);
+  var rm=document.getElementById("room"),fx=document.createElement("div");fx.className="fxw";rm.appendChild(fx);setTimeout(function(){fx.remove()},1200);
+  toast(l.st,"ok");setTimeout(showLC,2400);
 }
 
-/* =========================================
-   شاشة إتمام المستوى
-========================================= */
 function showLC(){
-  const l=LEVELS[G.lvl],box=document.getElementById('lc-box');
-  box.innerHTML=`
-    <div class="lc-title">مبروك! 🎉</div>
-    <div class="lc-emoji">${l.ghost.weaknessEmoji}</div>
-    <div class="lc-weak">نقطة ضعف ${l.ghost.name}: ${l.ghost.weaknessEmoji} ${l.ghost.weaknessName}</div>
-    <div class="lc-txt">${l.successText}</div>
-    <button class="btn btn-primary" onclick="nextLvl()"><i class="fas fa-forward"></i>&nbsp; ${G.lvl<LEVELS.length-1?'المستوى التالي':'شوفي النتيجة'}</button>
-  `;
-  showScr('lc-screen');
+  var l=LV[G.lv],ic=IC[l.g.wid]||{i:"fa-circle",c:"#888"},b=document.getElementById("lcb");
+  b.innerHTML='<div class="lct">مبروك</div><div style="font-size:44px;color:'+ic.c+';margin:12px 0;opacity:.8"><i class="fa-solid '+ic.i+'"></i></div><div class="lcw">'+l.g.n+" بيخاف من "+l.g.wn+'</div><div class="lcd">'+l.st+'</div><button class="btn bp" id="nxtBtn"><i class="fas fa-forward"></i>&nbsp; '+(G.lv<LV.length-1?"التالي":"النتيجة")+"</button>";
+  showScr("lc");
+  document.getElementById("nxtBtn").addEventListener("click",nxt);
 }
 
-function nextLvl(){
-  if(G.lvl<LEVELS.length-1){G.lvl++;stopAI();showIntro()}
-  else showGC();
-}
+function nxt(){if(G.lv<LV.length-1){G.lv++;stopAI();stopWhisp();stopTrail();showIntro()}else showGC()}
 
 function showGC(){
-  stopAI();
-  const box=document.getElementById('gc-box');
-  let gh='';
-  LEVELS.forEach(l=>{gh+=`<div class="gc-g"><span class="ge">${l.ghost.weaknessEmoji}</span><strong>${l.ghost.name}</strong><div class="gf">بيخاف من: ${l.ghost.weaknessEmoji} ${l.ghost.weaknessName}</div></div>`});
-  box.innerHTML=`
-    <div class="gc-title">كسبتي اللعبة! 🏆</div>
-    <p style="color:var(--muted);margin-bottom:8px;font-size:14px">طردّيتي كل الأشباح! كل واحد كان بيخاف من حاجة غريبة</p>
-    <div class="gc-ghosts">${gh}</div>
-    <button class="btn btn-primary" onclick="startGame()" style="margin-top:16px"><i class="fas fa-redo"></i>&nbsp; العبي تاني</button>
-    <button class="btn btn-sec" onclick="showScr('menu-screen')" style="margin-top:6px"><i class="fas fa-home"></i>&nbsp; القائمة</button>
-  `;
-  showScr('gc-screen');sfxWin();
+  stopAI();stopWhisp();stopTrail();var b=document.getElementById("gcb"),gh="";
+  for(var i=0;i<LV.length;i++){var l=LV[i],ic=IC[l.g.wid]||{i:"fa-circle",c:"#888"};gh+='<div class="gci"><i class="fa-solid '+ic.i+'" style="color:'+ic.c+';font-size:24px;display:block;margin-bottom:5px;opacity:.8"></i><span class="gn">'+l.g.n+'</span><div class="gf">بيخاف من '+l.g.wn+"</div></div>"}
+  b.innerHTML='<div class="gct">كسبتي</div><div class="gcg">'+gh+'</div><button class="btn bp" id="rpBtn" style="margin-top:16px"><i class="fas fa-redo"></i>&nbsp; تاني</button>';
+  showScr("gc");S.wn();
+  document.getElementById("rpBtn").addEventListener("click",startGame);
 }
 
-/* =========================================
-   ذكاء الشبح
-========================================= */
-function startAI(){stopAI();G.gInt=setInterval(aiTick,2200)}
-function stopAI(){if(G.gInt){clearInterval(G.gInt);G.gInt=null}}
+/* ===== ذكاء شبح ===== */
+function startAI(){stopAI();G.gI=setInterval(aiT,2200)}
+function stopAI(){if(G.gI){clearInterval(G.gI);G.gI=null}}
+function stopWhisp(){if(G.wI){clearInterval(G.wI);G.wI=null}}
 
-function aiTick(){
-  if(G.gone||G.mood==='fleeing')return;
-  let nx,ny;
-  if(G.fear>60){
-    const dx=G.gPos.x-G.pPos.x,dy=G.gPos.y-G.pPos.y,d=Math.sqrt(dx*dx+dy*dy)||1;
-    nx=G.gPos.x+(dx/d)*16+(Math.random()-.5)*10;
-    ny=G.gPos.y+(dy/d)*12+(Math.random()-.5)*8;
-  }else if(G.fear>0){
-    nx=G.gPos.x+(Math.random()-.5)*16;
-    ny=G.gPos.y+(Math.random()-.5)*10;
-  }else{
-    nx=G.gPos.x+(Math.random()-.5)*26;
-    ny=G.gPos.y+(Math.random()-.5)*18;
-  }
-  nx=Math.min(88,Math.max(8,nx));ny=Math.min(68,Math.max(8,ny));
-  moveG(nx,ny);
+function aiT(){
+  if(G.gone||G.mood==="fleeing")return;
+  var nx,ny;
+  if(G.fear>60){var dx=G.gP.x-G.pP.x,dy=G.gP.y-G.pP.y,d=Math.sqrt(dx*dx+dy*dy)||1;nx=G.gP.x+(dx/d)*20+(Math.random()-.5)*12;ny=G.gP.y+(dy/d)*16+(Math.random()-.5)*10}
+  else if(G.fear>0){nx=G.gP.x+(Math.random()-.5)*18;ny=G.gP.y+(Math.random()-.5)*12}
+  else{nx=G.gP.x+(Math.random()-.5)*30;ny=G.gP.y+(Math.random()-.5)*20}
+  nx=Math.min(88,Math.max(8,nx));ny=Math.min(68,Math.max(8,ny));moveG(nx,ny);
+  if(Math.random()<.12)S.wo();
 }
 
-function moveG(x,y){
-  G.gPos={x,y};const g=document.getElementById('gh');
-  if(g){g.style.left=x+'%';g.style.top=y+'%'}
+function moveG(x,y){G.gP={x:x,y:y};var g=document.getElementById("gh");if(g){g.style.left=x+"%";g.style.top=y+"%"}}
+function moveGA(){var dx=G.gP.x-G.pP.x,dy=G.gP.y-G.pP.y,d=Math.sqrt(dx*dx+dy*dy)||1;moveG(Math.min(88,Math.max(8,G.gP.x+(dx/d)*26)),Math.min(68,Math.max(8,G.gP.y+(dy/d)*20)))}
+
+function setM(m){
+  G.mood=m;var g=document.getElementById("gh");if(!g)return;
+  g.classList.remove("scared","amused","annoyed","fleeing");
+  if(m==="scared")g.classList.add("scared");
+  else if(m==="amused")g.classList.add("amused");
+  else if(m==="annoyed")g.classList.add("annoyed");
+  else if(m==="fleeing")g.classList.add("fleeing");
 }
 
-function moveGAway(){
-  const dx=G.gPos.x-G.pPos.x,dy=G.gPos.y-G.pPos.y,d=Math.sqrt(dx*dx+dy*dy)||1;
-  moveG(Math.min(88,Math.max(8,G.gPos.x+(dx/d)*22)),Math.min(68,Math.max(8,G.gPos.y+(dy/d)*16)));
+/* ===== حوار ===== */
+function showDlg(t){
+  var rm=document.getElementById("room");
+  var old=rm.querySelectorAll(".dlg");for(var i=0;i<old.length;i++)old[i].remove();
+  clearTimeout(G.dTO);
+  var d=document.createElement("div");d.className="dlg";d.textContent=t;
+  d.style.bottom="82px";d.style.left="50%";d.style.transform="translateX(-50%)";
+  rm.appendChild(d);G.dTO=setTimeout(function(){d.remove()},3000);
 }
 
-function setMood(m){
-  G.mood=m;const g=document.getElementById('gh');if(!g)return;
-  g.classList.remove('scared','amused','annoyed','fleeing');
-  if(m==='scared')g.classList.add('scared');
-  else if(m==='amused')g.classList.add('amused');
-  else if(m==='annoyed')g.classList.add('annoyed');
-  else if(m==='fleeing')g.classList.add('fleeing');
+/* ===== تنبيه ===== */
+function toast(t,tp){
+  tp=tp||"";var c=document.getElementById("tbc"),e=document.createElement("div");
+  e.className="tst "+tp;e.textContent=t;c.appendChild(e);
+  setTimeout(function(){e.style.opacity="0";e.style.transition="opacity .3s";setTimeout(function(){e.remove()},300)},tp==="disc"?3800:2400);
 }
 
-/* =========================================
-   الحوار
-========================================= */
-function showDlg(txt){
-  const room=document.getElementById('room');
-  room.querySelectorAll('.dialog').forEach(d=>d.remove());
-  clearTimeout(G.dlgTO);
-  const d=document.createElement('div');d.className='dialog';d.textContent=txt;
-  d.style.bottom='90px';d.style.left='50%';d.style.transform='translateX(-50%)';
-  room.appendChild(d);
-  G.dlgTO=setTimeout(()=>d.remove(),3200);
-}
-
-/* =========================================
-   التنبيهات
-========================================= */
-function toast(txt,type=''){
-  const c=document.getElementById('toast-box'),t=document.createElement('div');
-  t.className=`toast ${type}`;t.textContent=txt;c.appendChild(t);
-  setTimeout(()=>{t.style.opacity='0';t.style.transform='translateY(-8px)';t.style.transition='all .3s';setTimeout(()=>t.remove(),300)},type==='disc'?4200:2600);
-}
-
-/* =========================================
-   اختصارات
-========================================= */
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){G.sel=null;renderInv();updHint()}
+/* ===== أحداث ===== */
+document.getElementById("playBtn").addEventListener("click",startGame);
+document.getElementById("sbtn").addEventListener("click",function(){
+  S.ut=!S.ut;if(S.mg)S.mg.gain.value=S.ut?0:.35;
+  var b=document.getElementById("sbtn");
+  b.innerHTML=S.ut?'<i class="fas fa-volume-xmark"></i>':'<i class="fas fa-volume-up"></i>';
 });
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){G.sel=null;renderI()}});
 </script>
 </body>
 </html>
